@@ -68,7 +68,7 @@ const UpdateProfile: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center gap-4 bg-white p-8 md:rounded-sm md:shadow-md w-full md:w-[600px] mx-auto">
-      <h2 className="text-xl font-semibold mb-4">Update Personal Profile</h2>
+      <h2 className="text-2xl font-bold mb-4">Update Personal Profile</h2>
       <Steps current={currentStep} className="!w-full !mb-4">
         <Step title="Basic Information" />
         <Step title="Contact" />

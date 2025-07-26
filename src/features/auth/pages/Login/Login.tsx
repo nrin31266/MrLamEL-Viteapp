@@ -6,29 +6,33 @@ import { useAppDispatch, useAppSelector } from "../../../../store/store";
 import { login } from "../../../../store/authSlide";
 import { Link } from "react-router-dom";
 
-
 const Login = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { loadings, errors } = useAppSelector((state) => state.auth);
-  const onFinish: FormProps<{email: string, password: string}>["onFinish"] = (values) => {
+  const onFinish: FormProps<{ email: string; password: string }>["onFinish"] = (
+    values
+  ) => {
     console.log("Login values:", values);
-    dispatch(login(values)).unwrap().then(() => {
-      navigate("/");
-    });
+    dispatch(login(values))
+      .unwrap()
+      .then(() => {
+        navigate("/");
+      });
   };
   return (
-
-     <div className="flex flex-col gap-2 bg-white p-10 rounded-xs shadow-xs">
+    <div className="flex flex-col gap-2 bg-white p-10 rounded-xs shadow-xs">
       <div>
         <h1 className="text-2xl font-bold text-gray-800 text-center">Login</h1>
-        <p className="text-gray-600 text-center">Please enter your credentials to login.</p>
+        <p className="text-gray-600 text-center">
+          Please enter your credentials to login.
+        </p>
       </div>
-       <Form
-        name="basic"
+      <Form
+        name="login"
         // labelCol={{ span: 8 }}
         // wrapperCol={{ span: 16 }}
-      className="w-auto md:w-96"
+        className="w-auto md:w-96"
         initialValues={{ remember: true }}
         onFinish={onFinish}
         // onFinishFailed={onFinishFailed}
@@ -40,10 +44,12 @@ const Login = () => {
         <Form.Item
           // label="Email"
           name="email"
-          rules={[{ required: true, message: "Please input your email!" }]}
-          
+          rules={[
+            { required: true, message: "Please input your email!" },
+            { type: "email", message: "Please enter a valid email address" },
+          ]}
         >
-          <Input placeholder="Email" type="email"/>
+          <Input type="email" placeholder="Email" autoComplete="email" />
         </Form.Item>
 
         <Form.Item
@@ -55,18 +61,30 @@ const Login = () => {
         </Form.Item>
 
         <Form.Item label={null}>
-          <Button loading={loadings.login} type="primary" htmlType="submit" className="w-full" size="large">
+          <Button
+            loading={loadings.login}
+            type="primary"
+            htmlType="submit"
+            className="w-full"
+            size="large"
+          >
             Login
           </Button>
-          { errors.login && <p className="error">{errors?.login}</p>}
+          {errors.login && <p className="error">{errors?.login}</p>}
         </Form.Item>
       </Form>
       <div className="grid grid-cols-2 text-gray-600 text-sm">
-        <Link to="/auth/register" className="underline text-left">Don't have an account?</Link>
-        <Link to="/auth/request-password-reset" className="underline text-right">Forgot password?</Link>
+        <Link to="/auth/register" className="underline text-left">
+          Don't have an account?
+        </Link>
+        <Link
+          to="/auth/request-password-reset"
+          className="underline text-right"
+        >
+          Forgot password?
+        </Link>
       </div>
-     </div>
-
+    </div>
   );
 };
 

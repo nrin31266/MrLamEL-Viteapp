@@ -31,7 +31,7 @@ const Register = () => {
         <p className="text-gray-600 text-center">Please enter your details to register.</p>
       </div>
        <Form
-        name="basic"
+        name="register"
         // labelCol={{ span: 8 }}
         // wrapperCol={{ span: 16 }}
         className="w-auto md:w-96"
@@ -49,7 +49,7 @@ const Register = () => {
           rules={[{ required: true, message: "Please input your email!" }]}
           
         >
-          <Input placeholder="Email" type="email"/>
+          <Input placeholder="Email" type="email" autoComplete="email"/>
         </Form.Item>
 
         <Form.Item

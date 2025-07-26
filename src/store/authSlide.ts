@@ -120,7 +120,7 @@ export const requestPasswordReset = createAsyncThunk(
 export const resetPassword = createAsyncThunk(
   "auth/resetPassword",
   async (
-    data: { email: string; password: string; token: string },
+    data: { email: string; newPassword: string; token: string },
     { rejectWithValue }
   ) => {
     try {
@@ -129,10 +129,10 @@ export const resetPassword = createAsyncThunk(
           "/api/v1/auth/reset-password?email=" +
           data.email +
           "&newPassword=" +
-          data.password +
+          data.newPassword +
           "&token=" +
           data.token,
-        method: "POST",
+        method: "PUT",
       });
     } catch (error) {
       return rejectWithValue(ErrorUtils.extractErrorMessage(error));

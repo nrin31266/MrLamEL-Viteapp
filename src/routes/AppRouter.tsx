@@ -3,9 +3,10 @@ import AuthGuard from "./AuthGuard";
 import Login from "../features/auth/pages/Login/Login";
 import AuthLayout from "../features/auth/layouts/AuthLayout";
 import Register from "../features/auth/pages/Register/Register";
-import ResetPassword from "../features/auth/pages/ResetPassword/ResetPassword";
+
 import VerifyEmail from "../features/auth/pages/VerifyEmail/VerifyEmail";
 import UpdateProfile from "../features/auth/pages/UpdateProfile/UpdateProfile";
+import ResetPassword from "../features/auth/pages/ResetPassword/ResetPassword";
 
 const AppRouter = () => {
   return (
@@ -25,6 +26,7 @@ const AppRouter = () => {
             <Route
               path="/auth/request-password-reset"
               element={<ResetPassword />}
+              // element={<div>Request Password Reset Page</div>}
             />
           </Route>
           <Route

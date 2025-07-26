@@ -19,7 +19,7 @@ let failedQueue: {
 }[] = [];
 
 let lastRefreshAttempt = 0;
-const REFRESH_INTERVAL = 5 * 60 * 1000; // 5 phút
+const REFRESH_INTERVAL = 1 * 60 * 1000; // 1 phút
 
 const processQueue = (error: any, token: string | null) => {
   failedQueue.forEach(prom => {
@@ -60,11 +60,11 @@ axiosInstance.interceptors.response.use(
       const now = Date.now();
 
       // Nếu đã thử refresh gần đây → bỏ qua
-      // if (now - lastRefreshAttempt < REFRESH_INTERVAL) {
-      //   processQueue(error, null); // Đừng quên reject các request đang đợi
-      //   isRefreshing = false;
-      //   return Promise.reject(error);
-      // }
+      if (now - lastRefreshAttempt < REFRESH_INTERVAL) {
+        processQueue(error, null); // Đừng quên reject các request đang đợi
+        isRefreshing = false;
+        return Promise.reject(error);
+      }
 
       lastRefreshAttempt = now;
 
