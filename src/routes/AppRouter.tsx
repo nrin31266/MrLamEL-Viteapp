@@ -2,6 +2,10 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import AuthGuard from "./AuthGuard";
 import Login from "../features/auth/pages/Login/Login";
 import AuthLayout from "../features/auth/layouts/AuthLayout";
+import Register from "../features/auth/pages/Register/Register";
+import ResetPassword from "../features/auth/pages/ResetPassword/ResetPassword";
+import VerifyEmail from "../features/auth/pages/VerifyEmail/VerifyEmail";
+import UpdateProfile from "../features/auth/pages/UpdateProfile/UpdateProfile";
 
 const AppRouter = () => {
   return (
@@ -14,13 +18,13 @@ const AppRouter = () => {
           <Route path="/" element={<div>Introduction Page</div>} />
         </Route>
         <Route element={<AuthLayout />}>
-          {/* Auth routes - check đăng nhập */}
+          {/* Các route liên quan đến auth */}
           <Route element={<AuthGuard />}>
             <Route path="/auth/login" element={<Login />} />
-            <Route path="/auth/register" element={<div>Register Page</div>} />
+            <Route path="/auth/register" element={<Register/>} />
             <Route
               path="/auth/request-password-reset"
-              element={<div>Request Password Reset Page</div>}
+              element={<ResetPassword />}
             />
           </Route>
           <Route
@@ -30,7 +34,11 @@ const AppRouter = () => {
           >
             <Route
               path="/auth/verify-email"
-              element={<div>Verify email</div>}
+              element={<VerifyEmail />}
+            />
+             <Route
+              path="/auth/profile/:userId"
+              element={<UpdateProfile />}
             />
           </Route>
         </Route>

@@ -4,6 +4,10 @@
   --primary-color: #008cff;
   --font-family: "Poppins", sans-serif;
   --background-color: #ebebeb;
+  --secondary-color: #1a1a1a;
+  --primary-color-dark: #006bbf;
+  --primary-color-light: #66aaff;
+  --disabled-color: #b0b0b0;
 }
 html {
   font-family: var(--font-family);
@@ -17,4 +21,21 @@ ul {
   color: red;
   font-size: 0.875rem;
   margin-top: 0.5rem;
+}
+
+a{
+  color: var(--primary-color);
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.3s ease, text-decoration 0.3s ease;
+}
+a:hover {
+  
+  text-decoration: underline;
+  color: var(--primary-color-light);
+}
+a.disabled {
+  color: var(--disabled-color);
+  text-decoration: none;
+  cursor: not-allowed;
 }

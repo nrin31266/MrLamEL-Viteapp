@@ -19,7 +19,7 @@ const Login = () => {
   };
   return (
 
-     <div className="flex flex-col gap-2">
+     <div className="flex flex-col gap-2 bg-white p-10 rounded-xs shadow-xs">
       <div>
         <h1 className="text-2xl font-bold text-gray-800 text-center">Login</h1>
         <p className="text-gray-600 text-center">Please enter your credentials to login.</p>
@@ -28,7 +28,7 @@ const Login = () => {
         name="basic"
         // labelCol={{ span: 8 }}
         // wrapperCol={{ span: 16 }}
-        style={{width: "400px"}}
+      className="w-auto md:w-96"
         initialValues={{ remember: true }}
         onFinish={onFinish}
         // onFinishFailed={onFinishFailed}
@@ -55,7 +55,7 @@ const Login = () => {
         </Form.Item>
 
         <Form.Item label={null}>
-          <Button type="primary" htmlType="submit" className="w-full" size="large">
+          <Button loading={loadings.login} type="primary" htmlType="submit" className="w-full" size="large">
             Login
           </Button>
           { errors.login && <p className="error">{errors?.login}</p>}
