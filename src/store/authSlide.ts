@@ -61,8 +61,7 @@ export const login = createAsyncThunk(
       });
       return data;
     } catch (error) {
-    //   return rejectWithValue(ErrorUtils.extractErrorMessage(error));
-    return rejectWithValue("Failed");
+      return rejectWithValue(ErrorUtils.extractErrorMessage(error));
     }
   }
 );
@@ -113,9 +112,9 @@ const authSlice = createSlice({
 
       })
       .addCase(login.rejected, (state, action) => {
-        console.log("Here ")
         state.loadings.login = false;
         state.errors.login = action.payload as string;
+        console.log("Login error:", action.payload); // Log the error for debugging
       })
 
 

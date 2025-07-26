@@ -34,7 +34,7 @@ const AuthGuard = ({
     return <Loading />;
   }
 
-  if( !user && !isAuthPage && loadings.fetchMyInfo == false) {
+  if( !user && !isAuthPage && loadings.fetchMyInfo == false && location.pathname !== "/") {
     return <Navigate to="/auth/login" state={{ from: location }} replace />;
   }
 
@@ -62,6 +62,12 @@ const AuthGuard = ({
     // Kiểm tra role nếu route yêu cầu
     if (user && !allowedRoles.includes(user.role) && allowedRoles.length > 0) {
       return <Navigate to="/unauthorized" />;
+    }
+
+    if(user && location.pathname === "/") {
+      // Nếu đã đăng nhập và ở trang chính, redirect về trang mặc định theo role
+      // Ví dụ: /admin/dashboard, /teacher/dashboard, /student/dashboard
+      return <Navigate to={getDefaultRouteByRole(user.role)} replace />;
     }
 
 
