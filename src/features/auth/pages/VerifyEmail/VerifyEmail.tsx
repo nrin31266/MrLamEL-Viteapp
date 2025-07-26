@@ -5,6 +5,7 @@ import {
   sendEmailVerification,
   setMyInfo,
   verifyEmail,
+  type IUser,
 } from "../../../../store/authSlide";
 import { useNavigate } from "react-router-dom";
 const LAST_EMAIL_RESEND_TIME = "last_email_resend_time";
@@ -55,8 +56,8 @@ const VerifyEmail = () => {
         dispatch(
           setMyInfo({
             ...user,
-            active: true, // Giả sử xác thực thành công sẽ kích hoạt tài khoản
-          })
+            active: true, // Giả sử xác thực thành công sẽ đánh dấu là active
+          } as IUser)
         ); // Cập nhật lại thông tin người dùng
         navigate("/");
       });

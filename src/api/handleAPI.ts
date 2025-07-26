@@ -8,6 +8,7 @@ interface RequestParams<B = unknown> {
   method?: Method;
   isAuth?: boolean;
   params?: Record<string, any>;
+  withCredentials?: boolean;
 }
 
 interface IApiResponse<T> {
@@ -22,6 +23,7 @@ const handleAPI = async <T, B = unknown>({
   method = "get",
   isAuth = false,
   params,
+  withCredentials = false
 }: RequestParams<B>): Promise<T> => {
   try {
     const headers: Record<string, string> = {};
@@ -39,6 +41,7 @@ const handleAPI = async <T, B = unknown>({
       data: body,
       headers,
       params,
+      withCredentials
     });
 
     const apiResponse: IApiResponse<T> = axiosResponse.data;

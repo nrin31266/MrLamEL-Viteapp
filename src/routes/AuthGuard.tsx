@@ -22,19 +22,20 @@ const AuthGuard = ({
   const isAuthPage = authPages.some((path) =>
     location.pathname.match(path)
   );
+  const isLoading = loadings.fetchMyInfo || loadings.refreshToken;
 
   useEffect(() => {
-    if (!user && !loadings.fetchMyInfo) {
+    if (!user && !isLoading) {
       dispatch(fetchMyInfo());
     }
-  }, [dispatch, location.pathname, user]);
+  }, []);
 
   // Loading state
   if (loadings.fetchMyInfo) {
     return <Loading />;
   }
 
-  if( !user && !isAuthPage && loadings.fetchMyInfo == false && location.pathname !== "/") {
+  if( !user && !isAuthPage && isLoading === false && location.pathname !== "/") {
     return <Navigate to="/auth/login" state={{ from: location }} replace />;
   }
 
@@ -45,23 +46,31 @@ const AuthGuard = ({
       const redirectPath = getDefaultRouteByRole(user.role);
       return <Navigate to={redirectPath} replace />;
     }
+    // Kiểm tra role nếu route yêu cầu
+    if (user && !allowedRoles.includes(user.role) && allowedRoles.length > 0) {
+      return <Navigate to="/unauthorized" />;
+    }
     // Email chưa verify
     if (!user.active && !location.pathname.startsWith("/auth/verify-email")) {
       return <Navigate to="/auth/verify-email" />;
     }
-    // Email đã verify nhưng vẫn ở trang verify-email
-    if (user.active && location.pathname.startsWith("/auth/verify-email")) {
-      return <Navigate to={getDefaultRouteByRole(user.role)} replace />;
-    }
-
+  
     // // Chưa hoàn tất profile
     // if (user.active && !user.profileComplete && !location.pathname.includes('/auth/profile')) {
     //   return <Navigate to={`/auth/profile/${user.id}`} />;
     // }
 
-    // Kiểm tra role nếu route yêu cầu
-    if (user && !allowedRoles.includes(user.role) && allowedRoles.length > 0) {
-      return <Navigate to="/unauthorized" />;
+    if (user.active && !user.profileComplete && !location.pathname.startsWith("/auth/profile/")) {
+      return <Navigate to={"/auth/profile/"+user.id} replace />;
+    }
+
+    // Email đã verify nhưng vẫn ở trang verify-email. replace: để không lưu vào history
+    if (user.active && location.pathname.startsWith("/auth/verify-email")) {
+      return <Navigate to={getDefaultRouteByRole(user.role)} replace />;
+    }
+
+    if (user.active && user.profileComplete && location.pathname.startsWith("/auth/profile/")) {
+      return <Navigate to={getDefaultRouteByRole(user.role)} replace />;
     }
 
     if(user && location.pathname === "/") {

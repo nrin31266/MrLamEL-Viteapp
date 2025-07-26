@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import { ErrorUtils } from "../utils/errorUtils";
 import handleAPI from "../api/handleAPI";
 import { DeviceUtils } from "../utils/deviceUtils";
@@ -18,6 +18,7 @@ export interface IUser {
   active: boolean;
   completedProfile: boolean;
   gender: "MALE" | "FEMALE" | "OTHER";
+  profileComplete?: boolean;
 }
 
 export interface LoginPayload {
@@ -62,6 +63,7 @@ export const login = createAsyncThunk(
         endpoint: "/api/v1/auth/login",
         method: "POST",
         body: getUserAuthData(credentials),
+        withCredentials: true
       });
       return data;
     } catch (error) {
@@ -80,6 +82,7 @@ export const register = createAsyncThunk(
         endpoint: "/api/v1/auth/register",
         method: "POST",
         body: getUserAuthData(userData),
+        withCredentials: true
       });
       return data;
     } catch (error) {
@@ -122,7 +125,13 @@ export const resetPassword = createAsyncThunk(
   ) => {
     try {
       await handleAPI({
-        endpoint: "/api/v1/auth/reset-password?email=" + data.email + "&newPassword=" + data.password + "&token=" + data.token,
+        endpoint:
+          "/api/v1/auth/reset-password?email=" +
+          data.email +
+          "&newPassword=" +
+          data.password +
+          "&token=" +
+          data.token,
         method: "POST",
       });
     } catch (error) {
@@ -147,18 +156,40 @@ export const verifyEmail = createAsyncThunk(
 export const updateProfile = createAsyncThunk(
   "auth/updateProfile",
   async (
-    data: { fullName: string; phoneNumber: string; dob: string; address: string },
+    data: {
+      fullName: string;
+      phoneNumber: string;
+      dob: string;
+      address: string;
+      gender: string;
+    },
     { rejectWithValue }
   ) => {
     try {
       await handleAPI({
         endpoint: "/api/v1/auth/update-profile",
-        method: "POST",
+        method: "PUT",
         body: data,
         isAuth: true,
       });
     } catch (error) {
       return rejectWithValue(ErrorUtils.extractErrorMessage(error));
+    }
+  }
+);
+
+export const refreshTokenThunk = createAsyncThunk(
+  "auth/refreshToken",
+  async (_, { rejectWithValue }) => {
+    try {
+      const data = await handleAPI<{ accessToken: string }>({
+        endpoint: "/api/v1/auth/refresh-token",
+        method: "POST",
+        withCredentials: true,
+      });
+      return data;
+    } catch (err) {
+      return rejectWithValue(ErrorUtils.extractErrorMessage(err));
     }
   }
 );
@@ -174,6 +205,7 @@ interface AuthState {
     resetPassword?: boolean;
     verifyEmail?: boolean;
     updateProfile?: boolean;
+    refreshToken?: boolean;
   };
   errors: {
     fetchMyInfo?: string | null;
@@ -182,6 +214,7 @@ interface AuthState {
     emailVerification?: string | null;
     passwordReset?: string | null;
     updateProfile?: string | null;
+    refreshToken?: string | null;
   };
 }
 const initialState: AuthState = {
@@ -198,9 +231,9 @@ const authSlice = createSlice({
       state.loadings = {};
       state.errors = {};
     },
-    setMyInfo: (state, action) => {
+    setMyInfo: (state, action: PayloadAction<IUser>) => {
       state.user = action.payload;
-    }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -303,8 +336,21 @@ const authSlice = createSlice({
         state.errors.updateProfile = action.payload as string;
         console.log("Update profile error:", action.payload); // Log the error for debugging
       })
-      ;
-}});
+      .addCase(refreshTokenThunk.pending, (state) => {
+        state.loadings.refreshToken = true;
+        state.errors.refreshToken = null;
+      })
+      .addCase(refreshTokenThunk.fulfilled, (state, action) => {
+        state.loadings.refreshToken = false;
+        localStorage.setItem("accessToken", action.payload.accessToken);
+      })
+      .addCase(refreshTokenThunk.rejected, (state, action) => {
+        state.loadings.refreshToken = false;
+        state.errors.refreshToken = action.payload as string;
+        console.log("Refresh token error:", action.payload); // Log the error for debugging
+      });
+  },
+});
 
 export default authSlice.reducer;
 export const { resetAuthState, setMyInfo } = authSlice.actions;
