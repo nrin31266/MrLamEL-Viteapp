@@ -39,3 +39,13 @@ a.disabled {
   text-decoration: none;
   cursor: not-allowed;
 }
+
+/* Tăng icon size khi collapsed hoặc không */
+.ant-menu-item-icon {
+  font-size: 20px !important;
+  min-width: 20px;
+  line-height: 1;
+}
+.ant-divider-horizontal {
+  margin: 0 !important;
+}

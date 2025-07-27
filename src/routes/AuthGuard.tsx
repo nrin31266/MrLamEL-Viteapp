@@ -89,11 +89,11 @@ const AuthGuard = ({
 const getDefaultRouteByRole = (role: "ADMIN" | "TEACHER" | "STUDENT") => {
   switch (role) {
     case "ADMIN":
-      return "/admin/dashboard";
+      return "/admin";
     case "TEACHER":
-      return "/teacher/dashboard";
+      return "/teacher";
     case "STUDENT":
-      return "/student/dashboard";
+      return "/student";
     default:
       return "/"; // Nếu không xác định được role, trả về trang chính
   }

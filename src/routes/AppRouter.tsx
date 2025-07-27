@@ -1,4 +1,4 @@
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Router, Routes } from "react-router-dom";
 import AuthGuard from "./AuthGuard";
 import Login from "../features/auth/pages/Login/Login";
 import AuthLayout from "../features/auth/layouts/AuthLayout";
@@ -7,6 +7,9 @@ import Register from "../features/auth/pages/Register/Register";
 import VerifyEmail from "../features/auth/pages/VerifyEmail/VerifyEmail";
 import UpdateProfile from "../features/auth/pages/UpdateProfile/UpdateProfile";
 import ResetPassword from "../features/auth/pages/ResetPassword/ResetPassword";
+import AdminLayout from "../features/admin/layout/AdminLayout";
+import AdminDashboard from "../features/admin/pages/AdminDashboard/Dashboard";
+import AdminContent from "../features/admin/components/AdminContent/AdminContent";
 
 const AppRouter = () => {
   return (
@@ -45,10 +48,14 @@ const AppRouter = () => {
           </Route>
         </Route>
 
-        {/* Route chỉ dành cho Admin */}
-        <Route element={<AuthGuard allowedRoles={["ADMIN"]} />}>
-          <Route path="/admin/*" element={<div>Admin Layout</div>} />
-        </Route>
+       <Route element={<AuthGuard allowedRoles={["ADMIN"]} />}>
+            <Route path="/admin" element={<AdminLayout />} >
+              <Route index element={<AdminDashboard />} />
+              <Route path="users" element={<div>Manage Users</div>} />
+              <Route path="settings" element={<div>Admin Settings</div>} />
+              <Route path="*" element={<div>Admin Not Found</div>} />
+            </Route>
+          </Route>
 
         {/* Route chỉ dành cho User */}
         <Route element={<AuthGuard allowedRoles={["TEACHER"]} />}>

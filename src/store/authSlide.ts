@@ -180,16 +180,26 @@ export const updateProfile = createAsyncThunk(
 
 export const refreshTokenThunk = createAsyncThunk(
   "auth/refreshToken",
-  async (_, { rejectWithValue }) => {
-    try {
-      const data = await handleAPI<{ accessToken: string }>({
+  async () => {
+    await handleAPI<{ accessToken: string }>({
         endpoint: "/api/v1/auth/refresh-token",
         method: "POST",
         withCredentials: true,
       });
+  }
+);
+export const logout = createAsyncThunk(
+  "auth/logout",
+  async (_, { rejectWithValue }) => {
+    try {
+      const data = await handleAPI<{ message: string }>({
+        endpoint: "/api/v1/auth/logout",
+        method: "POST",
+        withCredentials: true,
+      });
       return data;
-    } catch (err) {
-      return rejectWithValue(ErrorUtils.extractErrorMessage(err));
+    } catch (error) {
+      return rejectWithValue(ErrorUtils.extractErrorMessage(error));
     }
   }
 );
@@ -206,6 +216,8 @@ interface AuthState {
     verifyEmail?: boolean;
     updateProfile?: boolean;
     refreshToken?: boolean;
+    logout?: boolean;
+  
   };
   errors: {
     fetchMyInfo?: string | null;
@@ -348,7 +360,16 @@ const authSlice = createSlice({
         state.loadings.refreshToken = false;
         state.errors.refreshToken = action.payload as string;
         console.log("Refresh token error:", action.payload); // Log the error for debugging
-      });
+      })
+      .addCase(logout.pending, (state) => {
+        state.loadings.logout = true;
+      })
+
+      .addCase(logout.fulfilled, (state) => {
+        localStorage.removeItem("accessToken");
+        state.loadings.logout = false;
+      })
+
   },
 });
 
