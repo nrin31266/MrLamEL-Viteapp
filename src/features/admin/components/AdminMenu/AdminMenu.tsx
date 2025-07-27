@@ -2,6 +2,7 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
+  DashboardOutlined,
   UserOutlined,
   SettingOutlined,
   TeamOutlined,
@@ -9,10 +10,12 @@ import {
   BarChartOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
+  HomeOutlined,
 } from '@ant-design/icons';
 import { MdDashboard } from "react-icons/md";
 import type { MenuProps } from 'antd';
 import { Menu, Button } from 'antd';
+import { HiBuildingOffice2 } from "react-icons/hi2";
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -32,7 +35,9 @@ function getItem(
 
 const items: MenuItem[] = [
   getItem('Dashboard', '/admin', <MdDashboard />),
+  getItem('Branches', '/admin/branches', <HiBuildingOffice2 />),
   getItem('Manage Users', '/admin/users', <UserOutlined />),
+  
   getItem('Teachers', 'sub1', <TeamOutlined />, [
     getItem('All Teachers', '/admin/teachers'),
     getItem('Add Teacher', '/admin/teachers/add'),
@@ -65,6 +70,7 @@ const AdminMenu: React.FC<AdminMenuProps> = ({ collapsed, onCollapse }) => {
     const path = location.pathname;
     if (path === '/admin') return ['/admin'];
     if (path.includes('/admin/users')) return ['/admin/users'];
+    if (path.includes('/admin/branches')) return ['/admin/branches'];
     if (path.includes('/admin/teachers')) return ['/admin/teachers'];
     if (path.includes('/admin/students')) return ['/admin/students'];
     if (path.includes('/admin/reports')) return ['/admin/reports'];
@@ -82,15 +88,15 @@ const AdminMenu: React.FC<AdminMenuProps> = ({ collapsed, onCollapse }) => {
   };
 
   return (
-    <div className="h-full bg-white flex flex-col border-r border-gray-200">
+    <div className="h-full bg-white flex flex-col">
       {/* Logo/Brand Area */}
-      <div className="h-16 flex gap-4 items-center justify-center px-4 border-gray-200">
-        <img src="/images/logo.png" alt="" className='h-12' />
-        {!collapsed && <img src="/images/logo-name.png" alt="" className='h-12' />}
+      <div className="h-16 flex items-center justify-center px-4 border-b border-gray-200 gap-4">
+          <img src="/images/logo.png" alt="" className='h-10' />
+        {!collapsed && <img src="/images/logo-name.png" alt="" className='h-10' />}
       </div>
 
       {/* Menu Area with scroll */}
-      <div className="flex-1 overflow-y-auto overflow-x-hidden">
+      <div className="flex-1 overflow-y-auto">
         <Menu
           selectedKeys={getSelectedKeys()}
           defaultOpenKeys={getOpenKeys()}
@@ -99,18 +105,16 @@ const AdminMenu: React.FC<AdminMenuProps> = ({ collapsed, onCollapse }) => {
           onClick={handleMenuClick}
           inlineCollapsed={collapsed}
           className="border-r-0"
-          lang='en'
-          
         />
       </div>
 
       {/* Sticky Collapse Button at Bottom */}
-      <div className="border-gray-200 p-2 bg-white">
+      <div className="p-2 bg-white">
         <Button
           type="default"
           icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
           onClick={() => onCollapse(!collapsed)}
-          className="!w-full hover:bg-gray-100 text-gray-600"
+          className="!w-full "
           size="large"
         />
       </div>

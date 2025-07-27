@@ -180,34 +180,34 @@ export const updateProfile = createAsyncThunk(
 
 export const refreshTokenThunk = createAsyncThunk(
   "auth/refreshToken",
-  async () => {
-    await handleAPI<{ accessToken: string }>({
+  async (_, { rejectWithValue }) => {
+    try {
+      const data = await handleAPI<{ accessToken: string }>({
         endpoint: "/api/v1/auth/refresh-token",
         method: "POST",
         withCredentials: true,
       });
+      return data;
+    } catch (err) {
+      return rejectWithValue(ErrorUtils.extractErrorMessage(err));
+    }
   }
 );
 export const logout = createAsyncThunk(
   "auth/logout",
-  async (_, { rejectWithValue }) => {
-    try {
-      const data = await handleAPI<{ message: string }>({
+  async () => {
+    await handleAPI<{ message: string }>({
         endpoint: "/api/v1/auth/logout",
         method: "POST",
         withCredentials: true,
       });
-      return data;
-    } catch (error) {
-      return rejectWithValue(ErrorUtils.extractErrorMessage(error));
-    }
   }
 );
 
 interface AuthState {
   user: IUser | null;
   loadings: {
-    fetchMyInfo?: boolean;
+    fetchMyInfo: boolean;
     login?: boolean;
     register?: boolean;
     sendEmailVerification?: boolean;
@@ -215,7 +215,7 @@ interface AuthState {
     resetPassword?: boolean;
     verifyEmail?: boolean;
     updateProfile?: boolean;
-    refreshToken?: boolean;
+    refreshToken: boolean;
     logout?: boolean;
   
   };
@@ -231,7 +231,18 @@ interface AuthState {
 }
 const initialState: AuthState = {
   user: null,
-  loadings: {},
+  loadings: {
+    fetchMyInfo: true,
+    login: false,
+    register: false,
+    sendEmailVerification: false,
+    requestPasswordReset: false,
+    resetPassword: false,
+    verifyEmail: false,
+    updateProfile: false,
+    refreshToken: false,
+    logout: false,
+  },
   errors: {},
 };
 const authSlice = createSlice({
@@ -239,9 +250,7 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     resetAuthState: (state) => {
-      state.user = null;
-      state.loadings = {};
-      state.errors = {};
+      state = initialState;
     },
     setMyInfo: (state, action: PayloadAction<IUser>) => {
       state.user = action.payload;

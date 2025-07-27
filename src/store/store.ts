@@ -4,10 +4,12 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit';
  // Thunk không cần destructure
 import { useDispatch, useSelector, type TypedUseSelectorHook } from 'react-redux'; 
 import authSlide from './authSlide';
+import adminReducer from './admin';
 
 
 const rootReducer = combineReducers({
-  auth: authSlide
+  auth: authSlide,
+  admin: adminReducer
 });
 
 

@@ -22,20 +22,19 @@ const AuthGuard = ({
   const isAuthPage = authPages.some((path) =>
     location.pathname.match(path)
   );
-  const isLoading = loadings.fetchMyInfo || loadings.refreshToken;
+  const isLoading = (loadings.fetchMyInfo || loadings.refreshToken) || false;
 
   useEffect(() => {
-    if (!user && !isLoading) {
+    if (!user) {
       dispatch(fetchMyInfo());
     }
   }, []);
-
   // Loading state
-  if (loadings.fetchMyInfo) {
+  if (isLoading) {
     return <Loading />;
   }
 
-  if( !user && !isAuthPage && isLoading === false && location.pathname !== "/") {
+  if( !user && !isAuthPage && !isLoading && location.pathname !== "/") {
     return <Navigate to="/auth/login" state={{ from: location }} replace />;
   }
 
