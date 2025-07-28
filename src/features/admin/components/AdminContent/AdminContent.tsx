@@ -13,4 +13,3 @@ const AdminContent: React.FC = () => {
 };
 
 export default AdminContent;
-             

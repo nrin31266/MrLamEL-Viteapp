@@ -11,6 +11,8 @@ import AdminDashboard from "../features/admin/pages/AdminDashboard/Dashboard";
 import AdminContent from "../features/admin/components/AdminContent/AdminContent";
 import BranchList from "../features/admin/pages/Branch/BranchList";
 import BranchForm from "../features/admin/pages/Branch/BranchForm";
+import RoomList from "../features/admin/pages/Room/RoomList";
+import RoomForm from "../features/admin/pages/Room/RoomForm";
 
 const AppRouter = () => {
   return (
@@ -56,6 +58,10 @@ const AppRouter = () => {
               <Route path="branches" element={<BranchList />} />
               <Route path="branches/create" element={<BranchForm />} />
               <Route path="branches/edit/:id" element={<BranchForm />} />
+              <Route path="rooms" element={<RoomList />} />
+              <Route path="rooms/branches/:branchId" element={<RoomList />} />
+              <Route path="rooms/create" element={<RoomForm />} />
+              <Route path="rooms/edit/:id" element={<RoomForm />} />
               <Route path="teachers" element={<div>Manage Teachers</div>} />
               <Route path="teachers/add" element={<div>Add Teacher</div>} />
               <Route path="students" element={<div>Manage Students</div>} />

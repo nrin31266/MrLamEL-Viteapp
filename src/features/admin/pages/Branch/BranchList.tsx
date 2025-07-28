@@ -17,7 +17,7 @@ import { MdDeleteOutline } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../../../../store/store";
 import { fetchBranches, deleteBranch } from "../../../../store/admin/branchSlide";
-
+import { FaRegEye } from "react-icons/fa";
 interface Branch {
   id: number;
   name: string;
@@ -113,10 +113,13 @@ const BranchList: React.FC = () => {
       title: "Rooms",
       dataIndex: "roomCount",
       key: "roomCount",
-      render: (count: number) => (
-        <Tag color="blue" className="text-center">
+      render: (count: number, record: Branch) => (
+        <div onClick={()=>{navigate(`/admin/rooms/branches/${record.id}`)}} className=" cursor-pointer">
+          <Tag  color="blue" className="text-center !text-sm">
           {count || 0} rooms
         </Tag>
+          
+        </div>
       ),
     },
     {
@@ -158,7 +161,7 @@ const BranchList: React.FC = () => {
       {/* Header */}
 
       {/* Filters */}
-      <div className="shadow-sm bg-white p-6 rounded-md">
+      <div className="shadow-sm bg-white p-4 rounded-md">
         <div className="flex justify-between items-center">
           <div>
             <h2 className="text-2xl font-bold text-gray-900 m-0">
@@ -169,7 +172,7 @@ const BranchList: React.FC = () => {
           <Button
             type="primary"
             icon={<PlusOutlined />}
-            onClick={() => navigate("/admin/branches/create")}
+            onClick={() => navigate({ pathname: "/admin/branches/create" , search: `?from=${encodeURIComponent(location.pathname)}`})}
             size="large"
           >
             Add New Branch
