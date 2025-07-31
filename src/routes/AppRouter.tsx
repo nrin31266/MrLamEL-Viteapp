@@ -13,6 +13,8 @@ import BranchList from "../features/admin/pages/Branch/BranchList";
 import BranchForm from "../features/admin/pages/Branch/BranchForm";
 import RoomList from "../features/admin/pages/Room/RoomList";
 import RoomForm from "../features/admin/pages/Room/RoomForm";
+import CourseList from "../features/admin/pages/Course/CourseList";
+import CourseForm from "../features/admin/pages/Course/CourseForm";
 
 const AppRouter = () => {
   return (
@@ -62,13 +64,17 @@ const AppRouter = () => {
               <Route path="rooms/branches/:branchId" element={<RoomList />} />
               <Route path="rooms/create" element={<RoomForm />} />
               <Route path="rooms/edit/:id" element={<RoomForm />} />
+              <Route path="courses" element={<CourseList />} />
+              <Route path="courses/create" element={<CourseForm />} />
+              <Route path="courses/edit/:id" element={<CourseForm />} />
+
               <Route path="teachers" element={<div>Manage Teachers</div>} />
               <Route path="teachers/add" element={<div>Add Teacher</div>} />
               <Route path="students" element={<div>Manage Students</div>} />
               <Route path="students/add" element={<div>Add Student</div>} />
               <Route path="reports" element={<div>Reports</div>} />
               <Route path="settings" element={<div>Admin Settings</div>} />
-              <Route path="*" element={<div>Admin Not Found</div>} />
+              {/* <Route path="*" element={<div>Admin Not Found</div>} /> */}
             </Route>
           </Route>
 

@@ -18,7 +18,7 @@ import { Menu, Button } from 'antd';
 import { HiBuildingOffice2 } from "react-icons/hi2";
 import { GrHomeOption } from "react-icons/gr";
 type MenuItem = Required<MenuProps>['items'][number];
-
+import { FaBook } from "react-icons/fa";
 function getItem(
   label: React.ReactNode,
   key: React.Key,
@@ -35,6 +35,7 @@ function getItem(
 
 const items: MenuItem[] = [
   getItem('Dashboard', '/admin', <MdDashboard />),
+  getItem('Course', '/admin/courses', <FaBook />),
   getItem('Branches', '/admin/branches', <HiBuildingOffice2 />),
   getItem('Rooms', '/admin/rooms', <GrHomeOption />),
   getItem('Manage Users', '/admin/users', <UserOutlined />),
@@ -71,6 +72,7 @@ const AdminMenu: React.FC<AdminMenuProps> = ({ collapsed, onCollapse }) => {
     const path = location.pathname;
     if (path === '/admin') return ['/admin'];
     if (path.includes('/admin/users')) return ['/admin/users'];
+    if (path.includes('/admin/courses')) return ['/admin/courses'];
     if (path.includes('/admin/branches')) return ['/admin/branches'];
     if (path.includes('/admin/rooms')) return ['/admin/rooms'];
     if (path.includes('/admin/teachers')) return ['/admin/teachers'];
