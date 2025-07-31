@@ -1,18 +1,34 @@
 import React, { useEffect, useState } from "react";
-import { Button, Input, Modal, Space, Table, Tag, Tooltip, message, Image } from "antd";
+import {
+  Button,
+  Input,
+  Modal,
+  Space,
+  Table,
+  Tag,
+  Tooltip,
+  message,
+  Image,
+} from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { FaEdit } from "react-icons/fa";
 import { MdDeleteOutline } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../../store/store";
-import { fetchCourses, deleteCourse } from "../../../../store/admin/courseSlide";
+import {
+  fetchCourses,
+  deleteCourse,
+  type ICourseDto,
+} from "../../../../store/admin/courseSlide";
 import { CurrencyUtils } from "../../../../utils/CurrencyUtils";
 
 const CourseList: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [searchText, setSearchText] = useState("");
-  const { fetch: fetchLoading, delete: deleteLoading } = useAppSelector((state) => state.admin.course.loadings || {});
+  const { fetch: fetchLoading, delete: deleteLoading } = useAppSelector(
+    (state) => state.admin.course.loadings || {}
+  );
   const courses = useAppSelector((state) => state.admin.course.data) || [];
 
   useEffect(() => {
@@ -23,20 +39,28 @@ const CourseList: React.FC = () => {
     navigate(`/admin/courses/edit/${record.id}`);
   };
 
-  const handleDelete = (record: any) => {
-    Modal.confirm({
-      title: "Confirm Delete",
-      content: `Are you sure you want to delete course "${record.name}"?`,
-      okText: "Delete",
-      okType: "danger",
-      cancelText: "Cancel",
-      onOk() {
-        return dispatch(deleteCourse(record.id)).unwrap()
-          .then(() => message.success("Course deleted successfully!"))
-          .catch(() => message.error("Failed to delete course!"));
-      },
-    });
-  };
+const handleDelete = (record: ICourseDto) => {
+  Modal.confirm({
+    title: "Confirm Delete",
+    content: `Are you sure you want to delete course "${record.name}"?`,
+    okText: "Delete",
+    okType: "danger",
+    cancelText: "Cancel",
+    async onOk() {
+      try {
+        await dispatch(deleteCourse(record.id)).unwrap();
+        // Không cần return message.success(), chỉ resolve thôi
+        message.success("Course deleted successfully!");
+      } catch {
+        message.error("Failed to delete course!");
+        // Throw để Modal biết là onOk fail => không đóng
+        throw new Error("Delete failed");
+        
+      }
+    },
+  });
+};
+
 
   const columns = [
     {
@@ -50,7 +74,12 @@ const CourseList: React.FC = () => {
       dataIndex: "logoUrl",
       key: "logoUrl",
       width: 80,
-      render: (url: string) => url ? <Image src={url} width={42} height={42} alt="logo" /> : <span>No image</span>,
+      render: (url: string) =>
+        url ? (
+          <Image src={url} width={42} height={42} alt="logo" />
+        ) : (
+          <span>No image</span>
+        ),
     },
     {
       title: "Code",
@@ -68,7 +97,11 @@ const CourseList: React.FC = () => {
       title: "Sessions",
       dataIndex: "totalSessions",
       key: "totalSessions",
-      render: (num: number) => <Tag className="!text-sm" color="blue">{num} sessions</Tag>,
+      render: (num: number) => (
+        <Tag className="!text-sm" color="blue">
+          {num} sessions
+        </Tag>
+      ),
     },
     {
       title: "Fee",
@@ -80,7 +113,8 @@ const CourseList: React.FC = () => {
       title: "MRP Fee",
       dataIndex: "mrpFee",
       key: "mrpFee",
-      render: (fee: number) => fee && <span>{CurrencyUtils.formatVND(fee)}</span>,
+      render: (fee: number) =>
+        fee && <span>{CurrencyUtils.formatVND(fee)}</span>,
     },
     {
       title: "Actions",
@@ -121,7 +155,9 @@ const CourseList: React.FC = () => {
       <div className="shadow-sm bg-white p-4 rounded-md">
         <div className="flex justify-between items-center">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 m-0">Course Management</h2>
+            <h2 className="text-2xl font-bold text-gray-900 m-0">
+              Course Management
+            </h2>
             <p className="text-gray-500 mt-1">Manage all courses</p>
           </div>
           <Button
@@ -144,7 +180,8 @@ const CourseList: React.FC = () => {
             />
           </div>
           <div className="text-sm text-gray-500">
-            Total: <span className="font-medium">{filteredCourses.length}</span> courses
+            Total: <span className="font-medium">{filteredCourses.length}</span>{" "}
+            courses
           </div>
         </div>
       </div>
@@ -159,7 +196,8 @@ const CourseList: React.FC = () => {
             total: filteredCourses.length,
             showSizeChanger: false,
             showQuickJumper: false,
-            showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} courses`,
+            showTotal: (total, range) =>
+              `${range[0]}-${range[1]} of ${total} courses`,
           }}
           className="ant-table-striped"
           rowClassName={(_, index) =>

@@ -20,6 +20,7 @@ import {
 } from "../../../../store/admin/courseSlide";
 import Loading from "../../../../components/common/Loading";
 import { uploadAntDImage } from "../../../firebase/uploadImage";
+import { IoChevronBack } from "react-icons/io5";
 const CourseForm: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -29,13 +30,6 @@ const CourseForm: React.FC = () => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const props: UploadProps = {
-    // onRemove: (file) => {
-    //   const index = fileList.indexOf(file);
-    //   const newFileList = fileList.slice();
-    //   newFileList.splice(index, 1);
-    //   setFileList(newFileList);
-    // },
-
     beforeUpload: (file) => {
       setFileList([
         {
@@ -65,7 +59,12 @@ const CourseForm: React.FC = () => {
     fetchById: fetchByIdLoading,
     create: createLoading,
     update: updateLoading,
-  } = useAppSelector((state) => state.admin.course.loadings || {});
+  } = useAppSelector((state) => state.admin.course.loadings);
+  const {
+    fetchById: fetchByIdError,
+    create: createError,
+    update: updateError,
+  } = useAppSelector((state) => state.admin.course.error);
   const selectedCourse = useAppSelector(
     (state) => state.admin.course.selectedCourse
   );
@@ -97,7 +96,14 @@ const CourseForm: React.FC = () => {
   const onFinish = async (values: Partial<ICourseDto>) => {
     try {
       setIsUploading(true);
-      values.logoUrl = await uploadAntDImage(fileList[0]);
+      const logoUrl = await uploadAntDImage(fileList[0]);
+      values.logoUrl = logoUrl;
+      setFileList((pre) => [
+        {
+          ...pre[0],
+          url: logoUrl,
+        },
+      ]);
     } catch (error) {
       message.error("Failed to upload course logo!");
       return;
@@ -123,12 +129,12 @@ const CourseForm: React.FC = () => {
   if (isEditing && fetchByIdLoading) {
     return <Loading />;
   }
-  const loading =  updateLoading || createLoading || isUploading;
+  const loading = updateLoading || createLoading || isUploading;
 
   return (
     <div className="min-h-screen container max-w-[43rem] mx-auto space-y-6">
       <div>
-        <Button onClick={handleCancel} className="hover:bg-gray-100 mb-4">
+        <Button icon={<IoChevronBack />} onClick={handleCancel} className="hover:bg-gray-100 mb-4">
           Back
         </Button>
       </div>
@@ -216,7 +222,9 @@ const CourseForm: React.FC = () => {
               </span>
             </Upload>
           </Form.Item>
-
+          {createError || updateError ? (
+            <p className="error">{isEditing ? updateError : createError}</p>
+          ) : null}
           <div className="flex justify-end space-x-3 pt-6 gap-4 border-gray-200">
             <Button size="large" onClick={handleCancel} className="min-w-24">
               Cancel
