@@ -17,6 +17,7 @@ import CourseList from "../features/admin/pages/Course/CourseList";
 import CourseForm from "../features/admin/pages/Course/CourseForm";
 import UserManagement from "../features/admin/pages/UserManagement/UserManagement";
 import Tools from "../features/admin/pages/Tools/Tools";
+import AddUser from "../features/admin/pages/UserManagement/AddUser";
 
 const AppRouter = () => {
   return (
@@ -69,6 +70,8 @@ const AppRouter = () => {
               <Route path="courses/create" element={<CourseForm />} />
               <Route path="courses/edit/:id" element={<CourseForm />} />
               <Route path="users/:role" element={<UserManagement />} />
+              <Route path="users/:role/add" element={<AddUser />} />
+              <Route path="users/:role/edit/:id" element={<AddUser />} />
               <Route path="tools" element={<Tools />} />
               <Route path="teachers" element={<div>Manage Teachers</div>} />
               <Route path="teachers/add" element={<div>Add Teacher</div>} />

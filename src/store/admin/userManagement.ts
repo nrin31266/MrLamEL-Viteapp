@@ -8,7 +8,7 @@ export interface IUserDto {
   fullName: string;
   phoneNumber: string;
   dob: any;
-  status: string;
+  status: "OK" | "BANNED" | "EXPIRED";
   role: "ADMIN" | "TEACHER" | "STUDENT";
   avatarUrl: any;
   address: any;
@@ -40,11 +40,18 @@ export interface IPageData<R> {
 }
 interface IUserManagementState {
   page: IPageData<IUserDto>;
+  selectedUser?: IUserDto | null;
   loadings:{
     fetch?: boolean;
+    create?: boolean;
+    update?: boolean;
+    fetchById?: boolean;
   }
   errors:{
     fetch?: string | null;
+    create?: string | null;
+    update?: string | null;
+    fetchById?: string | null;
   }
 }
 
@@ -81,6 +88,75 @@ export const fetchUsers = createAsyncThunk<IPageData<IUserDto>, Record<string, s
   }
 );
 
+    // @PreAuthorize("hasRole('ADMIN')")
+    // @PostMapping("/create")
+    // public ApiRes<Void> createUser(@RequestBody CreateUserRq createUserRq) throws MessagingException {
+    //     userService.createUser(createUserRq);
+    //     return ApiRes.success(null);
+    // }
+    // @PreAuthorize("hasRole('ADMIN')")
+    // @PutMapping("/{userId}/update")
+    // public ApiRes<Void> updateUser(
+    //         @PathVariable String userId,
+    //         @RequestBody UpdateUserReq updateUserRq
+    // ) {
+    //     userService.updateUser(userId, updateUserRq);
+    //     return ApiRes.success(null);
+    // }
+    export const createUser = createAsyncThunk<void, Partial<IUserDto>>(
+  "userManagement/createUser",
+  async (userData, { rejectWithValue }) => {
+    try {
+      await handleAPI<void>({
+        method: "POST",
+        endpoint: "/api/v1/users",
+        body: userData,
+        isAuth: true,
+      });
+    } catch (error) {
+      return rejectWithValue(ErrorUtils.extractErrorMessage(error));
+    }
+  }
+);
+export const updateUser = createAsyncThunk<void, { id: number; userData: Partial<IUserDto> }>(
+  "userManagement/updateUser",
+  async ({ id, userData }, { rejectWithValue }) => { 
+    try {
+      await handleAPI<void>({
+        method: "PUT",
+        endpoint: `/api/v1/users/${id}`,
+        body: userData,
+        isAuth: true,
+      });
+    } catch (error) {
+      return rejectWithValue(ErrorUtils.extractErrorMessage(error));
+    }
+  }
+);
+// @PreAuthorize("hasRole('ADMIN')")
+//     @GetMapping("/{userId}")
+//     public ApiRes<User> getUserById(@PathVariable String userId) {
+//         return ApiRes.success(
+//                 userService.getUserById(userId)
+//         );
+//     }
+
+export const fetchUserById = createAsyncThunk<IUserDto, number>(
+  "userManagement/fetchUserById",
+  async (userId, { rejectWithValue }) => {
+    try {
+      const data = await handleAPI<IUserDto>({
+        method: "GET",
+        endpoint: `/api/v1/users/${userId}`,
+        isAuth: true,
+      });
+      return data;
+    } catch (error) {
+      return rejectWithValue(ErrorUtils.extractErrorMessage(error));
+    }
+  }
+);
+
 const userManagementSlice = createSlice({
   name: "userManagement",
   initialState,
@@ -98,7 +174,41 @@ const userManagementSlice = createSlice({
       })
       .addCase(fetchUsers.rejected, (state, action) => {
         state.loadings.fetch = false;
-        state.errors.fetch = action.error.message;
+        state.errors.fetch = action.payload as string;
+      })
+      .addCase(createUser.pending, (state) => {
+        state.loadings.create = true;
+      })
+      .addCase(createUser.fulfilled, (state) => {
+        state.loadings.create = false;
+      })
+      .addCase(createUser.rejected, (state, action) => {
+        state.loadings.create = false;
+        state.errors.create = action.payload as string;
+      })
+      .addCase(updateUser.pending, (state) => {
+        state.loadings.update = true;
+        state.errors.update = null;
+      })
+      .addCase(updateUser.fulfilled, (state) => {
+        state.loadings.update = false;
+      })
+      .addCase(updateUser.rejected, (state, action) => {
+        state.loadings.update = false;
+        state.errors.update = action.payload as string;
+      })
+      .addCase(fetchUserById.pending, (state) => {
+        state.loadings.fetchById = true;
+        state.errors.fetchById = null;
+        state.selectedUser = null;
+      })
+      .addCase(fetchUserById.fulfilled, (state, action) => {
+        state.loadings.fetchById = false;
+        state.selectedUser = action.payload;
+      })
+      .addCase(fetchUserById.rejected, (state, action) => {
+        state.loadings.fetchById = false;
+        state.errors.fetchById = action.payload as string;
       });
   },
 });

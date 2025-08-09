@@ -1,7 +1,7 @@
-import { Input, Select } from "antd";
+import { Button, Divider, Input, Select } from "antd";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaSortAlphaDown } from "react-icons/fa";
+import { FaAddressBook, FaPlus, FaSortAlphaDown } from "react-icons/fa";
 interface Props {
   // Define any props if needed
   searchParams: URLSearchParams;
@@ -65,7 +65,7 @@ const UserControlPanel: React.FC<Props> = ({
         <Select.Option value="teachers">Teacher</Select.Option>
         {/* <Select.Option value="admin">Admin</Select.Option> */}
       </Select>
-
+        <Divider type="vertical"  />
       <Select
         size="large"
         labelRender={(value) => (
@@ -138,6 +138,8 @@ const UserControlPanel: React.FC<Props> = ({
           </Select>
         </div>
       </div>
+      <Divider type="vertical"/>
+      <Button icon={<FaPlus />} onClick={() => navigate(`/admin/users/${role}/add`, { state: { from: location.pathname + location.search } })} type="primary">Add</Button>
     </div>
   );
 };

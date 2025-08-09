@@ -1,5 +1,5 @@
 import React from "react";
-import { Navigate, useParams, useSearchParams } from "react-router-dom";
+import { Navigate, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../../store/store";
 import { useEffect } from "react";
 import {
@@ -9,11 +9,13 @@ import {
 import UserControlPanel from "./components/UserControlPanel";
 import type { ColumnProps, ColumnsType } from "antd/es/table";
 import Table from "antd/es/table";
-import { Tag, Tooltip } from "antd";
+import { Button, Popconfirm, Space, Tag, Tooltip } from "antd";
 import dayjs from "dayjs";
+import { Link } from "react-router-dom";
 
 
-const getRole = (
+
+export const getRole = (
   role: string | undefined
 ): { role: string; label: string } | undefined => {
   switch (role) {
@@ -33,6 +35,8 @@ const UserManagement = () => {
   const userRole = getRole(role);
   const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useAppDispatch();
+  const location = useLocation();
+  const navigate = useNavigate();
   const { errors, loadings, page } = useAppSelector(
     (state) => state.admin.userManagement
   );
@@ -81,6 +85,7 @@ const UserManagement = () => {
       };
       return <Tag className={`${roleColors[role as "ADMIN" | "TEACHER" | "STUDENT"]} !border-0`}>{role}</Tag>;
     },
+ 
   },
   {
     title: "Status",
@@ -91,6 +96,7 @@ const UserManagement = () => {
         status === "OK" ? "!bg-green-100 !text-green-600" : "!bg-gray-100 !text-gray-600";
       return <Tag className={`${statusColor} !border-0`}>{status}</Tag>;
     },
+ 
   },
   {
     title: "Gender",
@@ -108,6 +114,7 @@ const UserManagement = () => {
         <span className="text-gray-400 italic">N/A</span>
       );
     },
+
   },
   {
     title: "Active",
@@ -119,6 +126,7 @@ const UserManagement = () => {
       ) : (
         <Tag className="!bg-red-100 !text-red-600 !border-0">Inactive</Tag>
       ),
+
   },
   {
     title: "Profile Completed",
@@ -151,6 +159,22 @@ const UserManagement = () => {
     key: "createdAt",
     render: (date) => dayjs(date).format("DD/MM/YYYY HH:mm"),
   },
+  {
+    title: "Actions",
+    key: "actions",
+    render: (_, record) => (
+      <Space>
+        <Button variant="link" color="primary" onClick={() => navigate(`/admin/users/${role}/edit/${record.id}`,
+          { state: { from: location.pathname + location.search } })}>Edit</Button>
+        {/* <Popconfirm
+          title="Are you sure to delete this user?"
+          // onConfirm={() => handleDeleteUser(record.id)}
+        >
+          <a>Delete</a>
+        </Popconfirm> */}
+      </Space>
+    ),
+  }
 ];
 
   useEffect(() => {
@@ -165,7 +189,8 @@ const UserManagement = () => {
         searchParams={searchParams}
         setSearchParams={setSearchParams}
       />
-      <Table<IUserDto>
+      <div className="bg-white p-4 rounded-lg shadow-md">
+        <Table<IUserDto>
         columns={columns}
         dataSource={page.content}
         loading={loadings.fetch}
@@ -195,6 +220,7 @@ const UserManagement = () => {
         //   emptyText: errors.fetch || "No users found",
         // }}
       />
+      </div>
     </div>
   );
 };
