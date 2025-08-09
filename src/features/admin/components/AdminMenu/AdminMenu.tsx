@@ -18,7 +18,7 @@ import { Menu, Button } from 'antd';
 import { HiBuildingOffice2 } from "react-icons/hi2";
 import { GrHomeOption } from "react-icons/gr";
 type MenuItem = Required<MenuProps>['items'][number];
-import { FaBook } from "react-icons/fa";
+import { FaBook, FaTools } from "react-icons/fa";
 function getItem(
   label: React.ReactNode,
   key: React.Key,
@@ -35,10 +35,14 @@ function getItem(
 
 const items: MenuItem[] = [
   getItem('Dashboard', '/admin', <MdDashboard />),
+  getItem('Tools', '/admin/tools', <FaTools />),
   getItem('Course', '/admin/courses', <FaBook />),
   getItem('Branches', '/admin/branches', <HiBuildingOffice2 />),
   getItem('Rooms', '/admin/rooms', <GrHomeOption />),
-  getItem('Manage Users', '/admin/users', <UserOutlined />),
+  getItem('Users', 'sub3', <UserOutlined />, [
+    getItem('Students', '/admin/users/students'),
+    getItem('Teachers', '/admin/users/teachers'),
+  ]),
   
   getItem('Teachers', 'sub1', <TeamOutlined />, [
     getItem('All Teachers', '/admin/teachers'),
@@ -70,24 +74,30 @@ const AdminMenu: React.FC<AdminMenuProps> = ({ collapsed, onCollapse }) => {
   // Get current selected key based on location
   const getSelectedKeys = () => {
     const path = location.pathname;
+    // console.log('Current path:', path);
     if (path === '/admin') return ['/admin'];
-    if (path.includes('/admin/users')) return ['/admin/users'];
     if (path.includes('/admin/courses')) return ['/admin/courses'];
     if (path.includes('/admin/branches')) return ['/admin/branches'];
+    if (path.includes('/admin/tools')) return ['/admin/tools'];
     if (path.includes('/admin/rooms')) return ['/admin/rooms'];
+    if (path.includes('/admin/users/teachers')) return ['/admin/users/teachers'];
+    if (path.includes('/admin/users/students')) return ['/admin/users/students'];
     if (path.includes('/admin/teachers')) return ['/admin/teachers'];
-    if (path.includes('/admin/students')) return ['/admin/students'];
+    if (path.includes('/admin/teachers/add')) return ['/admin/teachers/add'];
+    
     if (path.includes('/admin/reports')) return ['/admin/reports'];
     if (path.includes('/admin/settings')) return ['/admin/settings'];
     return ['/admin'];
   };
 
-  // Get open keys for submenus
+  // // Get open keys for submenus
   const getOpenKeys = () => {
     const path = location.pathname;
+    console.log('Current path for open keys:', path);
     const openKeys = [];
     if (path.includes('/admin/teachers')) openKeys.push('sub1');
     if (path.includes('/admin/students')) openKeys.push('sub2');
+    if (path.startsWith('/admin/users')) openKeys.push('sub3');
     return openKeys;
   };
 

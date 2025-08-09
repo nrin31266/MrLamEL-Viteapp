@@ -15,6 +15,8 @@ import RoomList from "../features/admin/pages/Room/RoomList";
 import RoomForm from "../features/admin/pages/Room/RoomForm";
 import CourseList from "../features/admin/pages/Course/CourseList";
 import CourseForm from "../features/admin/pages/Course/CourseForm";
+import UserManagement from "../features/admin/pages/UserManagement/UserManagement";
+import Tools from "../features/admin/pages/Tools/Tools";
 
 const AppRouter = () => {
   return (
@@ -56,7 +58,6 @@ const AppRouter = () => {
        <Route element={<AuthGuard allowedRoles={["ADMIN"]} />}>
             <Route path="/admin" element={<AdminLayout />} >
               <Route index element={<AdminDashboard />} />
-              <Route path="users" element={<div>Manage Users</div>} />
               <Route path="branches" element={<BranchList />} />
               <Route path="branches/create" element={<BranchForm />} />
               <Route path="branches/edit/:id" element={<BranchForm />} />
@@ -67,7 +68,8 @@ const AppRouter = () => {
               <Route path="courses" element={<CourseList />} />
               <Route path="courses/create" element={<CourseForm />} />
               <Route path="courses/edit/:id" element={<CourseForm />} />
-
+              <Route path="users/:role" element={<UserManagement />} />
+              <Route path="tools" element={<Tools />} />
               <Route path="teachers" element={<div>Manage Teachers</div>} />
               <Route path="teachers/add" element={<div>Add Teacher</div>} />
               <Route path="students" element={<div>Manage Students</div>} />
