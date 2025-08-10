@@ -18,6 +18,9 @@ import CourseForm from "../features/admin/pages/Course/CourseForm";
 import UserManagement from "../features/admin/pages/UserManagement/UserManagement";
 import Tools from "../features/admin/pages/Tools/Tools";
 import AddUser from "../features/admin/pages/UserManagement/AddUser";
+import ClassManagement from "../features/admin/pages/Clazz/ClassManagement";
+import ClassForm from "../features/admin/pages/Clazz/ClassForm";
+import ClassDetails from "../features/admin/pages/Clazz/ClassDetails";
 
 const AppRouter = () => {
   return (
@@ -72,6 +75,9 @@ const AppRouter = () => {
               <Route path="users/:role" element={<UserManagement />} />
               <Route path="users/:role/add" element={<AddUser />} />
               <Route path="users/:role/edit/:id" element={<AddUser />} />
+              <Route path="classes" element={<ClassManagement />} />
+              <Route path="classes/create" element={<ClassForm />} />
+              <Route path="classes/details/:classId" element={<ClassDetails />} />
               <Route path="tools" element={<Tools />} />
               <Route path="teachers" element={<div>Manage Teachers</div>} />
               <Route path="teachers/add" element={<div>Add Teacher</div>} />

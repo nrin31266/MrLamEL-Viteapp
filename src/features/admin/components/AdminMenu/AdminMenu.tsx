@@ -13,6 +13,7 @@ import {
   HomeOutlined,
 } from '@ant-design/icons';
 import { MdDashboard } from "react-icons/md";
+import { BsFillCCircleFill } from "react-icons/bs";
 import type { MenuProps } from 'antd';
 import { Menu, Button } from 'antd';
 import { HiBuildingOffice2 } from "react-icons/hi2";
@@ -39,6 +40,7 @@ const items: MenuItem[] = [
   getItem('Course', '/admin/courses', <FaBook />),
   getItem('Branches', '/admin/branches', <HiBuildingOffice2 />),
   getItem('Rooms', '/admin/rooms', <GrHomeOption />),
+  getItem('Classes', '/admin/classes', <BsFillCCircleFill />),
   getItem('Users', 'sub3', <UserOutlined />, [
     getItem('Students', '/admin/users/students'),
     getItem('Teachers', '/admin/users/teachers'),
@@ -84,7 +86,7 @@ const AdminMenu: React.FC<AdminMenuProps> = ({ collapsed, onCollapse }) => {
     if (path.includes('/admin/users/students')) return ['/admin/users/students'];
     if (path.includes('/admin/teachers')) return ['/admin/teachers'];
     if (path.includes('/admin/teachers/add')) return ['/admin/teachers/add'];
-    
+    if (path.includes('/admin/classes')) return ['/admin/classes'];
     if (path.includes('/admin/reports')) return ['/admin/reports'];
     if (path.includes('/admin/settings')) return ['/admin/settings'];
     return ['/admin'];
