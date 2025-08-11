@@ -1,0 +1,57 @@
+import React from 'react'
+import { useAppSelector } from '../../../../store/store';
+import { CurrencyUtils } from '../../../../utils/CurrencyUtils';
+import { Button } from 'antd';
+import ScheduleSession from './components/ScheduleSession';
+
+const ClassOverview = () => {
+  const clazz = useAppSelector((state) => state.admin.classDetails.clazz);
+  if (!clazz) return null;
+  return (
+    <div>
+      <div className='bg-white  rounded-lg shadow-md'>
+        <h1 className='text-xl font-bold bg-gray-200 rounded-t-lg p-4'>Class Overview</h1>
+        <div className='p-4 grid grid-cols-12'>
+          <div className='col-span-12 mb-4'>
+            <img src={clazz.avatarUrl} className='h-24 w-24' alt={clazz.name} />
+          </div>
+          <p className='col-span-6'>
+            <strong>Class Id: </strong> {clazz.id}
+          </p>
+          <p className='col-span-6'>
+            <strong>Class Name: </strong> {clazz.name}
+          </p>
+          <p className='col-span-6'>
+            <strong>Created At: </strong> {new Date(clazz.createdAt).toLocaleString()}
+          </p>
+          <p className='col-span-6'>
+            <strong>Created By: </strong> {clazz.createdBy.fullName}
+          </p>
+          <p className='col-span-12'>
+            <strong>Max Seats: </strong> {clazz.maxSeats}
+          </p>
+          <p className='col-span-12'>
+            <strong>Total Sessions: </strong> {clazz.totalSessions}
+          </p>
+        </div>
+      </div>
+      <div className='bg-white  rounded-lg shadow-md mt-4'>
+        <h1 className='text-xl font-bold bg-gray-200 rounded-t-lg p-4'>Course</h1>
+        <div className='p-4'>
+          <p>
+            <strong>Code: </strong> {clazz.course.code}
+          </p>
+          <p>
+            <strong>Name: </strong> {clazz.course.name}
+          </p>
+          <p>
+            <strong>Fee: </strong> {CurrencyUtils.formatVND(clazz.course.fee)}
+          </p>
+        </div>
+      </div>
+     <ScheduleSession clazz={clazz} />
+    </div>
+  )
+}
+
+export default ClassOverview

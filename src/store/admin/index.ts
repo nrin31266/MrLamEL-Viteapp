@@ -5,6 +5,7 @@ import roomSlide from "./roomSlide";
 import courseSlide from './courseSlide';
 import userManagementSlide from './userManagement';
 import ClassManagement from "../admin/classManagement";
+import classDetailsSlide from "./classDetails";
 
 const adminReducer = combineReducers({
   dashboard: dashboardSlide,
@@ -13,6 +14,7 @@ const adminReducer = combineReducers({
   classManagement: ClassManagement,
   course: courseSlide,
   userManagement: userManagementSlide,
+  classDetails: classDetailsSlide,
 });
 
 export default adminReducer;

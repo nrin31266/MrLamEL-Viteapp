@@ -21,6 +21,7 @@ import AddUser from "../features/admin/pages/UserManagement/AddUser";
 import ClassManagement from "../features/admin/pages/Clazz/ClassManagement";
 import ClassForm from "../features/admin/pages/Clazz/ClassForm";
 import ClassDetails from "../features/admin/pages/Clazz/ClassDetails";
+import ClassOverview from "../features/admin/pages/Clazz/ClassOverview";
 
 const AppRouter = () => {
   return (
@@ -77,7 +78,9 @@ const AppRouter = () => {
               <Route path="users/:role/edit/:id" element={<AddUser />} />
               <Route path="classes" element={<ClassManagement />} />
               <Route path="classes/create" element={<ClassForm />} />
-              <Route path="classes/details/:classId" element={<ClassDetails />} />
+              <Route path="classes/details/:classId" element={<ClassDetails />} >
+                <Route index element={<ClassOverview/>} />
+              </Route>
               <Route path="tools" element={<Tools />} />
               <Route path="teachers" element={<div>Manage Teachers</div>} />
               <Route path="teachers/add" element={<div>Add Teacher</div>} />

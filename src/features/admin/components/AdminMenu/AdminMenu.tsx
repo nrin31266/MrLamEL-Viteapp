@@ -20,7 +20,7 @@ import { HiBuildingOffice2 } from "react-icons/hi2";
 import { GrHomeOption } from "react-icons/gr";
 type MenuItem = Required<MenuProps>['items'][number];
 import { FaBook, FaTools } from "react-icons/fa";
-function getItem(
+export function getItem(
   label: React.ReactNode,
   key: React.Key,
   icon?: React.ReactNode,

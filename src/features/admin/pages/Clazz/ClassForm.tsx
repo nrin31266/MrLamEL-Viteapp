@@ -17,7 +17,6 @@ const ClassForm = () => {
   const [form] = useForm();
   
   const dispatch = useAppDispatch();
-  const rooms = useAppSelector((state) => state.admin.classManagement.rooms);
     const [isUploading, setIsUploading] = useState(false);
   const courses = useAppSelector(
     (state) => state.admin.classManagement.courses
@@ -27,7 +26,6 @@ const ClassForm = () => {
   const {
     create: creatingClass,
     fetchCourses,
-    fetchRooms,
   } = useAppSelector((state) => state.admin.classManagement.loadings);
   const { create: createError } = useAppSelector(
     (state) => state.admin.classManagement.errors
@@ -79,22 +77,14 @@ const onFinish = async (values: any) => {
       maxCount: 1,
       listType: "picture-card",
     };
-  useEffect(() => {
-    if (fetchCourses === undefined) {
+    useEffect(() => {
+   if(fetchCourses === undefined){
       dispatch(fetchSelectCourses());
-    }
+   }
+    }, []);
 
-    if (fetchRooms === undefined) {
-      dispatch(fetchSelectRooms());
-    }
-  }, [dispatch]);
-  const roomId = Form.useWatch("roomId", form);
   const courseId = Form.useWatch("courseId", form);
-  useEffect(() => {
-    if (roomId) {
-       form.setFieldsValue({ maxSeats: rooms.filter(room => room.id === roomId)[0]?.capacity });
-    }
-  }, [roomId]);
+
   useEffect(() => {
     if (courseId) {
       form.setFieldsValue({ totalSessions: courses.filter(course => course.id === courseId)[0]?.totalSessions });
@@ -147,52 +137,32 @@ const onFinish = async (values: any) => {
             <Input placeholder="Enter name" />
           </Form.Item>
 
-          <Form.Item
-            className="col-span-8"
-            label="Room"
-            name="roomId"
-            rules={[{ required: true, message: "Please select the room!" }]}
-          >
-            <Select placeholder="Select room">
-              {rooms.map((room) => (
-                <Select.Option key={room.id} value={room.id}>
-                  <div className="flex justify-between items-center gap-2">
-                    <div>
-                      <span className="font-semibold">{room.code}</span>{" "}
-                      {"_" + room.name}
-                    </div>
-                    <div>Capacity: {room.capacity}</div>
-                  </div>
-                </Select.Option>
-              ))}
-            </Select>
-          </Form.Item>
+        
 
           <Form.Item
-            className="col-span-4"
+            className="col-span-12"
             label="Max Seats"
             name="maxSeats"
             rules={[
               { required: true, message: "Please enter the maxSeats!" },
-              () => ({
-                validator(_, value) {
-                  const capacity = rooms.find(
-                    (room) => room.id === roomId
-                  )?.capacity;
-                  if (!value) return Promise.resolve();
-                  const numValue = Number(value);
-                  if (capacity && numValue > capacity) {
-                    return Promise.reject(
-                      `Cannot exceed room capacity (${capacity})!`
-                    );
-                  }
-                  return Promise.resolve();
-                },
-              }),
+              // () => ({
+              //   validator(_, value) {
+              //     const capacity = rooms.find(
+              //       (room) => room.id === roomId
+              //     )?.capacity;
+              //     if (!value) return Promise.resolve();
+              //     const numValue = Number(value);
+              //     if (capacity && numValue > capacity) {
+              //       return Promise.reject(
+              //         `Cannot exceed room capacity (${capacity})!`
+              //       );
+              //     }
+              //     return Promise.resolve();
+              //   },
+              // }),
             ]}
           >
             <Input
-              disabled={!roomId}
               type="number"
               placeholder="Enter maxSeats"
             />
@@ -204,7 +174,7 @@ const onFinish = async (values: any) => {
             name="courseId"
             rules={[{ required: true, message: "Please select the course!" }]}
           >
-            <Select placeholder="Select course">
+            <Select disabled={fetchCourses} placeholder="Select course">
               {courses.map((course) => (
                 <Select.Option
                   label={`${course.code} - ${course.name}`}

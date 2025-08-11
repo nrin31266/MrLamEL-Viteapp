@@ -23,6 +23,9 @@ export interface IClazz {
   updatedAt: string
   schedules: IClassSchedule[]
   course: ICourseDto
+  createdBy: IUser
+  maxSeats: number
+  room: IRoomDto
 }
 
 export interface ICreateClazzRequest {
