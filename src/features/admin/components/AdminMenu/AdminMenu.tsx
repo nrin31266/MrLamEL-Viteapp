@@ -95,7 +95,7 @@ const AdminMenu: React.FC<AdminMenuProps> = ({ collapsed, onCollapse }) => {
   // // Get open keys for submenus
   const getOpenKeys = () => {
     const path = location.pathname;
-    console.log('Current path for open keys:', path);
+    // console.log('Current path for open keys:', path);
     const openKeys = [];
     if (path.includes('/admin/teachers')) openKeys.push('sub1');
     if (path.includes('/admin/students')) openKeys.push('sub2');

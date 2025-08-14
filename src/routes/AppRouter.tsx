@@ -22,6 +22,8 @@ import ClassManagement from "../features/admin/pages/Clazz/ClassManagement";
 import ClassForm from "../features/admin/pages/Clazz/ClassForm";
 import ClassDetails from "../features/admin/pages/Clazz/ClassDetails";
 import ClassOverview from "../features/admin/pages/Clazz/ClassOverview";
+import Holidays from "../features/common/pages/Holidays";
+import ClassSessions from "../features/admin/pages/Clazz/ClassSessions";
 
 const AppRouter = () => {
   return (
@@ -29,6 +31,7 @@ const AppRouter = () => {
       <Routes>
         {/* Public routes - không cần đăng nhập */}
         <Route path="/unauthorized" element={<div>Unauthorized Page</div>} />
+         
         <Route path="*" element={<div>Not Found Page</div>} />
         <Route element={<AuthGuard />}>
           <Route path="/" element={<div>Introduction Page</div>} />
@@ -57,6 +60,7 @@ const AppRouter = () => {
               path="/auth/profile/:userId"
               element={<UpdateProfile />}
             />
+           
           </Route>
         </Route>
 
@@ -75,11 +79,13 @@ const AppRouter = () => {
               <Route path="courses/edit/:id" element={<CourseForm />} />
               <Route path="users/:role" element={<UserManagement />} />
               <Route path="users/:role/add" element={<AddUser />} />
+              <Route path="holidays" element={<Holidays />} />
               <Route path="users/:role/edit/:id" element={<AddUser />} />
               <Route path="classes" element={<ClassManagement />} />
               <Route path="classes/create" element={<ClassForm />} />
               <Route path="classes/details/:classId" element={<ClassDetails />} >
                 <Route index element={<ClassOverview/>} />
+                <Route path="sessions" element={<ClassSessions />} />
               </Route>
               <Route path="tools" element={<Tools />} />
               <Route path="teachers" element={<div>Manage Teachers</div>} />

@@ -5,11 +5,13 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { useDispatch, useSelector, type TypedUseSelectorHook } from 'react-redux'; 
 import authSlide from './authSlide';
 import adminReducer from './admin';
+import commonReducer from './common';
 
 
 const rootReducer = combineReducers({
   auth: authSlide,
-  admin: adminReducer
+  admin: adminReducer,
+  common: commonReducer
 });
 
 

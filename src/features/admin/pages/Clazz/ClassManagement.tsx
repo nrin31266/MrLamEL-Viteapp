@@ -87,7 +87,7 @@ const ClassManagement = () => {
       width: 100,
       render: (_, record) => (
         <div>
-          <Button type='primary'  onClick={() => navigate(`details/${record.id}`, { state: { from: location.pathname + location.search } })}>Manager</Button>
+          <Button type='primary'  onClick={() => navigate(`/admin/classes/details/${record.id}`, { state: { from: location.pathname + location.search } })}>Manager</Button>
         </div>
       ),
     },
@@ -106,7 +106,7 @@ const ClassManagement = () => {
           }
           rowKey="id"
           pagination={{
-            current: page.currentPage + 1,
+            current: page.currentPage + 1 || 1,
             pageSize: page.currentSize,
             total: page.totalElements,
             onChange: (page, pageSize) => {

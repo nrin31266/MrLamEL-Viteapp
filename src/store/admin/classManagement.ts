@@ -66,7 +66,7 @@ const initialState: IClazzManagementState = {
       totalPages: 0,
       totalElements: 0,
       currentSize: 0,
-      currentPage: 0,
+      currentPage: 1,
       first: false,
       last: false,
       empty: false,
