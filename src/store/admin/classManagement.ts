@@ -16,7 +16,7 @@ export interface IClazz {
   name: string
   avatarUrl: string
   startDate: string
-  status: "DRAFT" | "READY" | "OPEN" | "ONGOING" | "FINISHED" | "CANCELLED";
+  status: "DRAFT" | "READY" | "OPEN" | "ONGOING" | "CANCELLED";
   endDate: string
   totalSessions: number
   createdAt: string

@@ -52,6 +52,12 @@ const ClassManagement = () => {
       width: 60,
     },
     {
+      title: "Avatar",
+      dataIndex: "avatarUrl",
+      key: "avatarUrl",
+      render: (avatarUrl: string) => <img src={avatarUrl} alt="Avatar" style={{ width: 40, height: 40, borderRadius: '50%' }} />,
+    },
+    {
       title: "Name",
       dataIndex: "name",
       key: "name",

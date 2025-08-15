@@ -4,6 +4,8 @@ import type { IClassSchedule, IClazz } from '../../../../../store/admin/classMan
 import FormScheduleModal from './FormScheduleModal';
 import { useAppDispatch } from '../../../../../store/store';
 import { deleteClassSchedule } from '../../../../../store/admin/classDetails';
+import { setAssignTeacherModal } from '../../../../../store/admin/assignTeacher';
+import { FaChalkboardTeacher } from "react-icons/fa";
 interface ScheduleSessionProps {
   clazz: IClazz; // Replace 'any' with the actual type of clazz
 }
@@ -11,6 +13,8 @@ const ScheduleSession: React.FC<ScheduleSessionProps> = ({ clazz }) => {
     const isAllowCreate = clazz.status === 'DRAFT';
     const isAllowDelete = clazz.status === 'DRAFT';
     const isAllowUpdate = clazz.status === 'DRAFT';
+      const isAllowAssign =
+    clazz?.status !== "DRAFT" && clazz?.status !== "CANCELLED";
     const [isModalOpen, setIsModalOpen] = React.useState(false);
     const dispatch = useAppDispatch();
     const [selectedSchedule, setSelectedSchedule] = React.useState<IClassSchedule>();
@@ -50,6 +54,9 @@ const ScheduleSession: React.FC<ScheduleSessionProps> = ({ clazz }) => {
                       <p className='font-semibold'>{`Schedule ${index + 1}`}</p>
                       <p className='text-gray-600'>{`Day: ${schedule.dayOfWeek}`}</p>
                       <p className='text-gray-600'>{`Time: ${schedule.startTime} - ${schedule.endTime}`}</p>
+                      <p><span className='font-semibold'>Teacher: </span>
+                      <span>{schedule.teacher ? schedule.teacher.id + '- ' + schedule.teacher.fullName + ' (' + schedule.teacher.email + ')' : 'Not assigned'}</span>
+                      </p>
                     </div>
                     <div>
                       <Button disabled={!isAllowUpdate} hidden={!isAllowUpdate} type="link" onClick={() => {
@@ -59,6 +66,9 @@ const ScheduleSession: React.FC<ScheduleSessionProps> = ({ clazz }) => {
                       <Button disabled={!isAllowDelete} hidden={!isAllowDelete} type="link" danger onClick={() => {
                         handleRemoveSchedule(schedule.id);
                       }}>Delete</Button>
+                      <Button icon={<FaChalkboardTeacher />} disabled={!isAllowAssign} hidden={!isAllowAssign} type="primary"  onClick={() => {
+                        dispatch(setAssignTeacherModal({open: true, mode: 'by-schedule', scheduleId: schedule.id}));
+                      }}>Assign Teacher</Button>
                     </div>
                   </div>
                 </div>

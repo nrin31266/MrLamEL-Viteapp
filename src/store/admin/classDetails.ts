@@ -202,7 +202,11 @@ export const markClassOnReady = createAsyncThunk<
 const classDetailsSlice = createSlice({
   name: "classDetails",
   initialState,
-  reducers: {},
+  reducers: {
+    setClazz: (state, action) => {
+      state.clazz = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchClazz.pending, (state) => {
@@ -290,5 +294,7 @@ const classDetailsSlice = createSlice({
       });
   },
 });
+
+export const { setClazz } = classDetailsSlice.actions;
 
 export default classDetailsSlice.reducer;

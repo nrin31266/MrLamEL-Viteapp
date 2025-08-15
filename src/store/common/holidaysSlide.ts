@@ -11,21 +11,24 @@ export interface IHolidaySolarDto{
     rootType: string,
 }
 
-export const getSolarHolidays = createAsyncThunk<IHolidaySolarDto[]>(
+export const getSolarHolidays = createAsyncThunk<IHolidaySolarDto[], number[]>(
     "holidays/getSolarHolidays",
-    async (_, { rejectWithValue }) => {
+    async (years, { rejectWithValue }) => {
         try {
+            // Chuyển array sang chuỗi query: 2025,2026,2027
+            const yearQuery = years.join(",");
             const data = await handleAPI<IHolidaySolarDto[]>({
-                endpoint: `/common/holidays/solar`,
+                endpoint: `/common/holidays/solar?years=${yearQuery}`,
                 method: "GET",
                 isAuth: true,
-            })
+            });
             return data;
         } catch (error) {
             return rejectWithValue(ErrorUtils.extractErrorMessage(error));
         }
     }
 );
+
 interface HolidaysState {
     solarHolidays?: IHolidaySolarDto[];
     loadings: {
