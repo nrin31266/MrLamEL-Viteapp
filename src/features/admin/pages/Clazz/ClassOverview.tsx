@@ -1,7 +1,7 @@
 import React from 'react'
 import { useAppSelector } from '../../../../store/store';
 import { CurrencyUtils } from '../../../../utils/CurrencyUtils';
-import { Button } from 'antd';
+import { Avatar, Button } from 'antd';
 import ScheduleSession from './components/ScheduleSession';
 
 const ClassOverview = () => {
@@ -13,7 +13,9 @@ const ClassOverview = () => {
         <h1 className='text-xl font-bold bg-gray-200 rounded-t-lg p-4'>Class Overview</h1>
         <div className='p-4 grid grid-cols-12'>
           <div className='col-span-12 mb-4'>
-            <img src={clazz.avatarUrl} className='h-24 w-24' alt={clazz.name} />
+            <Avatar key={clazz.id} src={clazz.avatarUrl} 
+            className='!h-42 !w-42' shape='square'
+            alt={clazz.name} />
           </div>
           <p className='col-span-6'>
             <strong>Class Id: </strong> {clazz.id}

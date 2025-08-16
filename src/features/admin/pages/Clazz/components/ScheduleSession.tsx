@@ -5,7 +5,8 @@ import FormScheduleModal from './FormScheduleModal';
 import { useAppDispatch } from '../../../../../store/store';
 import { deleteClassSchedule } from '../../../../../store/admin/classDetails';
 import { setAssignTeacherModal } from '../../../../../store/admin/assignTeacher';
-import { FaChalkboardTeacher } from "react-icons/fa";
+import { setAssignRoomModal } from "../../../../../store/admin/assignRoom";
+import { FaChalkboardTeacher, FaDoorOpen } from "react-icons/fa";
 interface ScheduleSessionProps {
   clazz: IClazz; // Replace 'any' with the actual type of clazz
 }
@@ -57,8 +58,22 @@ const ScheduleSession: React.FC<ScheduleSessionProps> = ({ clazz }) => {
                       <p><span className='font-semibold'>Teacher: </span>
                       <span>{schedule.teacher ? schedule.teacher.id + '- ' + schedule.teacher.fullName + ' (' + schedule.teacher.email + ')' : 'Not assigned'}</span>
                       </p>
+                      <p><span className='font-semibold'>Room: </span>
+                      <span>
+                        {schedule.room 
+                          ? `${schedule.room.code} - ${schedule.room.name} (Capacity: ${schedule.room.capacity})`
+                          : 'Not assigned'}
+                      </span>
+                      </p>
+                      {schedule.room?.branch && (
+                        <p><span className='font-semibold'>Branch: </span>
+                        <span>
+                          {`${schedule.room.branch.name}, ${schedule.room.branch.address} (Phone: ${schedule.room.branch.phone})`}
+                        </span>
+                        </p>
+                      )}
                     </div>
-                    <div>
+                    <div className='flex gap-4'>
                       <Button disabled={!isAllowUpdate} hidden={!isAllowUpdate} type="link" onClick={() => {
                         setSelectedSchedule(schedule);
                         setIsModalOpen(true);
@@ -66,9 +81,12 @@ const ScheduleSession: React.FC<ScheduleSessionProps> = ({ clazz }) => {
                       <Button disabled={!isAllowDelete} hidden={!isAllowDelete} type="link" danger onClick={() => {
                         handleRemoveSchedule(schedule.id);
                       }}>Delete</Button>
-                      <Button icon={<FaChalkboardTeacher />} disabled={!isAllowAssign} hidden={!isAllowAssign} type="primary"  onClick={() => {
+                      <Button icon={<FaChalkboardTeacher />} disabled={!isAllowAssign} hidden={!isAllowAssign} type="primary" onClick={() => {
                         dispatch(setAssignTeacherModal({open: true, mode: 'by-schedule', scheduleId: schedule.id}));
                       }}>Assign Teacher</Button>
+                      <Button icon={<FaDoorOpen />} disabled={!isAllowAssign} hidden={!isAllowAssign} type="primary" onClick={() => {
+                        dispatch(setAssignRoomModal({open: true, mode: 'by-schedule', scheduleId: schedule.id}));
+                      }}>Assign Room</Button>
                     </div>
                   </div>
                 </div>

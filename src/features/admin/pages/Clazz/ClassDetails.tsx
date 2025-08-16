@@ -14,6 +14,7 @@ const ClassDetails = () => {
   const items: MenuItem[] = [
     getItem("Overview", `/admin/classes/details/${classId}`),
     getItem("Sessions", `/admin/classes/details/${classId}/sessions`),
+    getItem("Participants", `/admin/classes/details/${classId}/participants`),
   ];
 
   const loading = useAppSelector(

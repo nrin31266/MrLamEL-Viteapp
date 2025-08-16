@@ -8,6 +8,7 @@ import ClassManagement from "../admin/classManagement";
 import classDetailsSlide from "./classDetails";
 import preViewSessionsSlide from "./preViewSessions";
 import assignTeacherSlide from "./assignTeacher";
+import assignRoomSlide from "./assignRoom";
 const adminReducer = combineReducers({
   dashboard: dashboardSlide,
   branch: branchSlide,
@@ -18,6 +19,7 @@ const adminReducer = combineReducers({
   classDetails: classDetailsSlide,
   preViewSessions: preViewSessionsSlide,
   assignTeacher: assignTeacherSlide,
+  assignRoom: assignRoomSlide,
 });
 
 export default adminReducer;

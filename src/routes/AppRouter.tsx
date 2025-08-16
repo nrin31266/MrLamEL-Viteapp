@@ -24,6 +24,7 @@ import ClassDetails from "../features/admin/pages/Clazz/ClassDetails";
 import ClassOverview from "../features/admin/pages/Clazz/ClassOverview";
 import Holidays from "../features/common/pages/Holidays";
 import ClassSessions from "../features/admin/pages/Clazz/ClassSessions";
+import ClassEnrollment from "../features/admin/pages/Clazz/ClassEnrollment";
 
 const AppRouter = () => {
   return (
@@ -86,6 +87,7 @@ const AppRouter = () => {
               <Route path="classes/details/:classId" element={<ClassDetails />} >
                 <Route index element={<ClassOverview/>} />
                 <Route path="sessions" element={<ClassSessions />} />
+                <Route path="participants" element={<ClassEnrollment />} />
               </Route>
               <Route path="tools" element={<Tools />} />
               <Route path="teachers" element={<div>Manage Teachers</div>} />

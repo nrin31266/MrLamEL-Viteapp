@@ -40,10 +40,12 @@ const ClassSessions = () => {
   const notShow = clazz?.status === "DRAFT" || !clazz;
 
   useEffect(() => {
-    if (clazz  && clazz.status !== "DRAFT") {
+    if (clazz  && clazz.status !== "DRAFT" && clazz.schedules.length > 0) {
       dispatch(fetchClassSessionsByClassId(clazz.id));
     }
   }, [dispatch, clazz?.id, clazz?.schedules]);
+
+
   const columns: ColumnProps<IClassSession>[] = [
     {
       title: "Index",
@@ -97,7 +99,6 @@ const ClassSessions = () => {
       render: (status) => <Tag>{status}</Tag>,
     }
   ];
-  if (isLoading) return <Loading />;
   return (
     <div className=" bg-white rounded-lg shadow-md h-full">
       <h2 className="text-xl font-semibold p-4 bg-gray-200 rounded-t-lg">
@@ -111,6 +112,8 @@ const ClassSessions = () => {
           dataSource={sessions}
           rowKey="id"
           pagination={false}
+          loading={isLoading}
+          
         />
       )}
     </div>

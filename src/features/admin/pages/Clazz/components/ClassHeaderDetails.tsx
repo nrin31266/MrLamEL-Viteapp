@@ -3,9 +3,11 @@ import { useAppDispatch, useAppSelector } from "../../../../../store/store";
 import { Button, Dropdown, Space, Tooltip, type MenuProps } from "antd";
 import MarkClassOnReadyModal from "./MarkClassOnReadyModal";
 import AssignTeacherModal from "./AssignTeacherModal";
+import AssignRoomModal from "./AssignRoomModal";
 import { DownOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { setAssignTeacherModal } from "../../../../../store/admin/assignTeacher";
+import { setAssignRoomModal } from "../../../../../store/admin/assignRoom";
 
 const ClassHeaderDetails = () => {
   const clazz = useAppSelector((state) => state.admin.classDetails.clazz);
@@ -28,6 +30,31 @@ const ClassHeaderDetails = () => {
       label: <a onClick={(e) => {
         e.preventDefault();
         dispatch(setAssignTeacherModal({open: true, mode: 'by-clazz', clazzId: clazz?.id}));
+      }}>All Sessions</a>,
+      key: "0",
+    },
+    {
+      label: (
+        <Link to={`/admin/classes/details/${clazz?.id}`}>
+          Classified by schedule
+        </Link>
+      ),
+      key: "1",
+    },
+    {
+      label: (
+        <Link to={`/admin/classes/details/${clazz?.id}/sessions`}>
+          Specific lesson
+        </Link>
+      ),
+      key: "2",
+    },
+  ];
+  const itemsRoom: MenuProps["items"] = [
+    {
+      label: <a onClick={(e) => {
+        e.preventDefault();
+        dispatch(setAssignRoomModal({open: true, mode: 'by-clazz', clazzId: clazz?.id}));
       }}>All Sessions</a>,
       key: "0",
     },
@@ -72,12 +99,24 @@ const ClassHeaderDetails = () => {
             Assign Teacher
           </Button>
         </Dropdown>
+        <Dropdown placement="bottomRight" menu={{ items: itemsRoom }} trigger={["click"]}>
+          <Button
+            icon={<DownOutlined />}
+            disabled={!isAllowAssign}
+            type="primary"
+            size="large"
+            onClick={(e) => e.preventDefault()}
+          >
+            Assign Room
+          </Button>
+        </Dropdown>
       </div>
       <MarkClassOnReadyModal
         isOpen={isOpenMarkClassOnReady}
         onClose={() => setIsOpenMarkClassOnReady(false)}
       />
-      <AssignTeacherModal/>
+      <AssignTeacherModal />
+      <AssignRoomModal />
     </header>
   );
 };
