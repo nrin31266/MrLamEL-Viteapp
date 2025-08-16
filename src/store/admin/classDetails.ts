@@ -50,14 +50,12 @@ export const EDayOfWeek = {
 
 interface classDetailsState {
   clazz?: IClazz;
-  classSessions?: IClassSession[];
   loadings: {
     fetch?: boolean;
     createSchedule?: boolean;
     updateSchedule?: boolean;
     deleteSchedule?: boolean;
     markClassOnReady?: boolean;
-    fetchClassSessions?: boolean;
   };
   errors: {
     fetch?: string | null;
@@ -65,7 +63,6 @@ interface classDetailsState {
     updateSchedule?: string | null;
     deleteSchedule?: string | null;
     markClassOnReady?: string | null;
-    fetchClassSessions?: string | null;
   };
 }
 const initialState: classDetailsState = {
@@ -183,21 +180,7 @@ export const markClassOnReady = createAsyncThunk<
   //       List<ClassSession> classSessions = classService.getClassSessionsByClassId(classId);
   //       return ApiRes.success(classSessions);
   //   }
-  export const fetchClassSessionsByClassId = createAsyncThunk<
-    IClassSession[],
-    number
-  >("classManagement/fetchClassSessionsByClassId", async (classId, { rejectWithValue }) => {
-    try {
-      const data = await handleAPI<IClassSession[]>({
-        method: "GET",
-        endpoint: `/api/v1/classes/${classId}/sessions`,
-        isAuth: true,
-      });
-      return data;
-    } catch (error) {
-      return rejectWithValue(ErrorUtils.extractErrorMessage(error));
-    }
-  });
+
 
 const classDetailsSlice = createSlice({
   name: "classDetails",
@@ -216,7 +199,7 @@ const classDetailsSlice = createSlice({
       .addCase(fetchClazz.fulfilled, (state, action) => {
         state.loadings.fetch = false;
         state.clazz = action.payload;
-        state.classSessions = undefined; // Reset class sessions when fetching class details
+       
       })
       .addCase(fetchClazz.rejected, (state, action) => {
         state.loadings.fetch = false;
@@ -280,18 +263,7 @@ const classDetailsSlice = createSlice({
         state.loadings.markClassOnReady = false;
         state.errors.markClassOnReady = action.payload as string;
       })
-      .addCase(fetchClassSessionsByClassId.pending, (state) => {
-        state.loadings.fetchClassSessions = true;
-        state.errors.fetchClassSessions = null;
-      })
-      .addCase(fetchClassSessionsByClassId.fulfilled, (state, action) => {
-        state.loadings.fetchClassSessions = false;
-        state.classSessions = action.payload;
-      })
-      .addCase(fetchClassSessionsByClassId.rejected, (state, action) => {
-        state.loadings.fetchClassSessions = false;
-        state.errors.fetchClassSessions = action.payload as string;
-      });
+    
   },
 });
 

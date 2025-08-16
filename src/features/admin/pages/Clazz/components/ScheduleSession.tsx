@@ -14,8 +14,6 @@ const ScheduleSession: React.FC<ScheduleSessionProps> = ({ clazz }) => {
     const isAllowCreate = clazz.status === 'DRAFT';
     const isAllowDelete = clazz.status === 'DRAFT';
     const isAllowUpdate = clazz.status === 'DRAFT';
-      const isAllowAssign =
-    clazz?.status !== "DRAFT" && clazz?.status !== "CANCELLED";
     const [isModalOpen, setIsModalOpen] = React.useState(false);
     const dispatch = useAppDispatch();
     const [selectedSchedule, setSelectedSchedule] = React.useState<IClassSchedule>();
@@ -81,12 +79,7 @@ const ScheduleSession: React.FC<ScheduleSessionProps> = ({ clazz }) => {
                       <Button disabled={!isAllowDelete} hidden={!isAllowDelete} type="link" danger onClick={() => {
                         handleRemoveSchedule(schedule.id);
                       }}>Delete</Button>
-                      <Button icon={<FaChalkboardTeacher />} disabled={!isAllowAssign} hidden={!isAllowAssign} type="primary" onClick={() => {
-                        dispatch(setAssignTeacherModal({open: true, mode: 'by-schedule', scheduleId: schedule.id}));
-                      }}>Assign Teacher</Button>
-                      <Button icon={<FaDoorOpen />} disabled={!isAllowAssign} hidden={!isAllowAssign} type="primary" onClick={() => {
-                        dispatch(setAssignRoomModal({open: true, mode: 'by-schedule', scheduleId: schedule.id}));
-                      }}>Assign Room</Button>
+                     
                     </div>
                   </div>
                 </div>

@@ -8,8 +8,9 @@ import {
 } from "../../../../../store/admin/assignTeacher";
 import Loading from "../../../../../components/common/Loading";
 import { useLocation } from "react-router-dom";
-import { fetchClassSessionsByClassId, setClazz } from "../../../../../store/admin/classDetails";
 import type { IUser } from "../../../../../store/authSlide";
+import { setClazz } from "../../../../../store/admin/classDetails";
+import { fetchClassSessionsByClassId } from "../../../../../store/admin/classSessions";
 const style: React.CSSProperties = {
   display: 'flex',
   flexDirection: 'column',
@@ -68,9 +69,7 @@ const AssignTeacherModal = () => {
         case "by-clazz":
           // Handle success for by-clazz
           dispatch(setClazz({ ...clazz, schedules: clazz.schedules.map(schedule => ({...schedule, teacher: selectedTeacher})) }));
-      //     if(location.pathname.includes(`admin/classes/details/${clazz.id}/sessions`)) {
-      //   dispatch(fetchClassSessionsByClassId(clazz.id));
-      // }
+          dispatch(fetchClassSessionsByClassId(clazz.id));
           break;
         case "by-schedule":
           // Handle success for by-schedule, thay cái teacher
@@ -79,6 +78,7 @@ const AssignTeacherModal = () => {
             if (schedule.id === targetId) {
               return {...schedule, teacher: selectedTeacher};
             }
+            dispatch(fetchClassSessionsByClassId(clazz.id));
             return schedule;
           })}));
           break;

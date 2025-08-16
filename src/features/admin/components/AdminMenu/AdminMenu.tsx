@@ -1,25 +1,20 @@
 // AdminMenu.tsx
-import React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
 import {
-  DashboardOutlined,
-  UserOutlined,
-  SettingOutlined,
-  TeamOutlined,
-  BookOutlined,
-  BarChartOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-  HomeOutlined,
+  SettingOutlined,
+  UserOutlined
 } from '@ant-design/icons';
-import { MdDashboard } from "react-icons/md";
-import { BsFillCCircleFill } from "react-icons/bs";
 import type { MenuProps } from 'antd';
-import { Menu, Button } from 'antd';
-import { HiBuildingOffice2 } from "react-icons/hi2";
-import { GrHomeOption } from "react-icons/gr";
-type MenuItem = Required<MenuProps>['items'][number];
+import { Button, Menu } from 'antd';
+import React from 'react';
+import { BsFillCCircleFill } from "react-icons/bs";
 import { FaBook, FaTools } from "react-icons/fa";
+import { GrHomeOption } from "react-icons/gr";
+import { HiBuildingOffice2 } from "react-icons/hi2";
+import { MdDashboard } from "react-icons/md";
+import { useLocation, useNavigate } from 'react-router-dom';
+type MenuItem = Required<MenuProps>['items'][number];
 export function getItem(
   label: React.ReactNode,
   key: React.Key,
@@ -36,25 +31,17 @@ export function getItem(
 
 const items: MenuItem[] = [
   getItem('Dashboard', '/admin', <MdDashboard />),
+    getItem('Classes', '/admin/classes', <BsFillCCircleFill />),
   getItem('Tools', '/admin/tools', <FaTools />),
   getItem('Course', '/admin/courses', <FaBook />),
   getItem('Branches', '/admin/branches', <HiBuildingOffice2 />),
   getItem('Rooms', '/admin/rooms', <GrHomeOption />),
-  getItem('Classes', '/admin/classes', <BsFillCCircleFill />),
   getItem('Users', 'sub3', <UserOutlined />, [
     getItem('Students', '/admin/users/students'),
     getItem('Teachers', '/admin/users/teachers'),
   ]),
   
-  getItem('Teachers', 'sub1', <TeamOutlined />, [
-    getItem('All Teachers', '/admin/teachers'),
-    getItem('Add Teacher', '/admin/teachers/add'),
-  ]),
-  getItem('Students', 'sub2', <BookOutlined />, [
-    getItem('All Students', '/admin/students'),
-    getItem('Add Student', '/admin/students/add'),
-  ]),
-  getItem('Reports', '/admin/reports', <BarChartOutlined />),
+  // getItem('Reports', '/admin/reports', <BarChartOutlined />),
   getItem('Settings', '/admin/settings', <SettingOutlined />),
 ];
 

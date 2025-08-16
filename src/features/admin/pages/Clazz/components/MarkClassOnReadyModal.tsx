@@ -7,10 +7,10 @@ import Loading from "../../../../../components/common/Loading";
 import { getSolarHolidays } from "../../../../../store/common/holidaysSlide";
 import dayjs from "dayjs";
 import {
-  fetchClassSessionsByClassId,
   markClassOnReady,
 } from "../../../../../store/admin/classDetails";
 import { useNavigate } from "react-router-dom";
+import { fetchClassSessionsByClassId } from "../../../../../store/admin/classSessions";
 
 interface Props {
   // Define any props if needed

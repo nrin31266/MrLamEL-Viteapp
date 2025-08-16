@@ -8,8 +8,9 @@ import {
 } from "../../../../../store/admin/assignRoom";
 import Loading from "../../../../../components/common/Loading";
 import { useLocation } from "react-router-dom";
-import { fetchClassSessionsByClassId, setClazz } from "../../../../../store/admin/classDetails";
 import type { IRoomDto } from "../../../../../store/admin/roomSlide";
+import { setClazz } from "../../../../../store/admin/classDetails";
+import { fetchClassSessionsByClassId } from "../../../../../store/admin/classSessions";
 
 const style: React.CSSProperties = {
   display: 'flex',
@@ -71,6 +72,7 @@ const AssignRoomModal = () => {
       switch (mode) {
         case "by-clazz":
           dispatch(setClazz({ ...clazz, schedules: clazz.schedules.map(schedule => ({...schedule, room: selectedRoom})) }));
+          dispatch(fetchClassSessionsByClassId(clazz.id));
           break;
         case "by-schedule":
           dispatch(setClazz({...clazz, schedules: clazz.schedules.map(schedule => {
@@ -79,9 +81,12 @@ const AssignRoomModal = () => {
             }
             return schedule;
           })}));
+          dispatch(fetchClassSessionsByClassId(clazz.id));
           break;
         case "by-session":
           break;
+
+        
       }
       
       dispatch(setAssignRoomModal({ open: false }));

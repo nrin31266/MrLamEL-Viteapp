@@ -9,17 +9,21 @@ import classDetailsSlide from "./classDetails";
 import preViewSessionsSlide from "./preViewSessions";
 import assignTeacherSlide from "./assignTeacher";
 import assignRoomSlide from "./assignRoom";
+import enrollStudentToClassSlice from "./enrollStudentToClass";
+import classSessionsSlide from "./classSessions";
 const adminReducer = combineReducers({
   dashboard: dashboardSlide,
   branch: branchSlide,
   room: roomSlide,
   classManagement: ClassManagement,
   course: courseSlide,
-  userManagement: userManagementSlide,
+  userManagement: userManagementSlide, 
   classDetails: classDetailsSlide,
   preViewSessions: preViewSessionsSlide,
   assignTeacher: assignTeacherSlide,
   assignRoom: assignRoomSlide,
+  enrollStudent: enrollStudentToClassSlice,
+  classSessions: classSessionsSlide
 });
 
 export default adminReducer;

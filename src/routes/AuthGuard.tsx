@@ -22,7 +22,7 @@ const AuthGuard = ({
   const isAuthPage = authPages.some((path) =>
     location.pathname.match(path)
   );
-  const isLoading = (loadings.fetchMyInfo || loadings.refreshToken) || false;
+  const isLoading = (loadings.fetchMyInfo) || false;
 
   useEffect(() => {
     if (!user) {

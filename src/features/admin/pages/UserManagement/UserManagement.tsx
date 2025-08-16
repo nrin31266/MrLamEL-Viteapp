@@ -57,12 +57,13 @@ const UserManagement = () => {
       title: "Name",
       dataIndex: "fullName",
       key: "fullName",
+
     },
     {
       title: "Email",
       dataIndex: "email",
       key: "email",
-      width: 200,
+
     },
     {
       title: "Phone",

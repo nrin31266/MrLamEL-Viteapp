@@ -368,6 +368,7 @@ const authSlice = createSlice({
       .addCase(refreshTokenThunk.rejected, (state, action) => {
         state.loadings.refreshToken = false;
         state.errors.refreshToken = action.payload as string;
+        state.user = null;
         console.log("Refresh token error:", action.payload); // Log the error for debugging
       })
       .addCase(logout.pending, (state) => {

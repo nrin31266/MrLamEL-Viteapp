@@ -1,15 +1,19 @@
-import React, { useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "../../../../store/store";
-import Loading from "../../../../components/common/Loading";
-import {
-  fetchClassSessionsByClassId,
-  type IClassSession,
-} from "./../../../../store/admin/classDetails";
+import { Button, Dropdown, Tag, type MenuProps } from "antd";
 import type { ColumnProps } from "antd/es/table";
 import Table from "antd/es/table";
 import dayjs from "dayjs";
-import { Tag } from "antd";
+import { useEffect } from "react";
+import {
+  fetchClassSessionsByClassId,
+  setClazzId,
+} from "../../../../store/admin/classSessions";
 import type { IUser } from "../../../../store/authSlide";
+import { useAppDispatch, useAppSelector } from "../../../../store/store";
+import { type IClassSession } from "./../../../../store/admin/classDetails";
+import { setAssignTeacherModal } from "../../../../store/admin/assignTeacher";
+import { FaChalkboardTeacher, FaDoorOpen } from "react-icons/fa";
+import { setAssignRoomModal } from "../../../../store/admin/assignRoom";
+import { DownOutlined } from "@ant-design/icons";
 const checkClassStatus = (date: string, start: string, end: string) => {
   // date: "YYYY-MM-DD", start/end: "HH:mm"
   const now = dayjs();
@@ -31,20 +35,117 @@ const checkClassStatus = (date: string, start: string, end: string) => {
 const ClassSessions = () => {
   const dispatch = useAppDispatch();
   const sessions = useAppSelector(
-    (state) => state.admin.classDetails.classSessions
+    (state) => state.admin.classSessions.classSessions
   );
   const isLoading = useAppSelector(
-    (state) => state.admin.classDetails.loadings.fetchClassSessions
+    (state) => state.admin.classSessions.loadings.fetchClassSessions
   );
   const clazz = useAppSelector((state) => state.admin.classDetails.clazz);
   const notShow = clazz?.status === "DRAFT" || !clazz;
+  const { clazzId } = useAppSelector((state) => state.admin.classSessions);
+
+  const itemsTeacher: MenuProps["items"] = [
+    {
+      label: (
+        <a
+          onClick={(e) => {
+            e.preventDefault();
+            dispatch(
+              setAssignTeacherModal({
+                open: true,
+                mode: "by-clazz",
+                clazzId: clazz?.id,
+              })
+            );
+          }}
+        >
+          All Sessions
+        </a>
+      ),
+      key: "0",
+    },
+    {
+      label: <span>Classified by schedule</span>,
+      key: "1",
+      children: clazz?.schedules?.map((schedule) => ({
+        label: (
+          <a
+            onClick={(e) => {
+              e.preventDefault();
+              dispatch(
+                setAssignTeacherModal({
+                  open: true,
+                  mode: "by-schedule",
+                  scheduleId: schedule.id,
+                })
+              );
+            }}
+          >
+            {schedule.dayOfWeek} {schedule.startTime} - {schedule.endTime}
+          </a>
+        ),
+        key: schedule.id,
+      })),
+    },
+  ];
+  const itemsRoom: MenuProps["items"] = [
+    {
+      label: (
+        <a
+          onClick={(e) => {
+            e.preventDefault();
+            dispatch(
+              setAssignRoomModal({
+                open: true,
+                mode: "by-clazz",
+                clazzId: clazz?.id,
+              })
+            );
+          }}
+        >
+          All Sessions
+        </a>
+      ),
+      key: "0",
+    },
+    {
+      label: <span>Classified by schedule</span>,
+      key: "1",
+      children: clazz?.schedules?.map((schedule) => ({
+        label: (
+          <a
+            onClick={(e) => {
+              e.preventDefault();
+              dispatch(
+                setAssignRoomModal({
+                  open: true,
+                  mode: "by-schedule",
+                  scheduleId: schedule.id,
+                })
+              );
+            }}
+          >
+            {schedule.dayOfWeek} {schedule.startTime} - {schedule.endTime}
+          </a>
+        ),
+        key: schedule.id,
+      })),
+    },
+  ];
+  const isAllowAssign =
+    clazz?.status !== "DRAFT" && clazz?.status !== "CANCELLED";
 
   useEffect(() => {
-    if (clazz  && clazz.status !== "DRAFT" && clazz.schedules.length > 0) {
+    if (
+      clazz &&
+      clazz.status !== "DRAFT" &&
+      clazz.schedules.length > 0 &&
+      clazzId !== clazz.id
+    ) {
       dispatch(fetchClassSessionsByClassId(clazz.id));
+      dispatch(setClazzId(clazz.id));
     }
-  }, [dispatch, clazz?.id, clazz?.schedules]);
-
+  }, [dispatch, clazzId, clazz?.id]);
 
   const columns: ColumnProps<IClassSession>[] = [
     {
@@ -75,7 +176,7 @@ const ClassSessions = () => {
       dataIndex: "teacher",
       key: "teacher",
       title: "Teacher",
-      render: (teacher:IUser) => (teacher ? teacher.fullName : "Unassigned"),
+      render: (teacher: IUser) => (teacher ? teacher.fullName : "Unassigned"),
     },
     {
       title: "Room",
@@ -88,22 +189,76 @@ const ClassSessions = () => {
       dataIndex: "conduct",
       key: "conduct",
       render: (conduct, record) => {
-        const status = checkClassStatus(record.date, record.startTime, record.endTime);
-        return <Tag color={status === "Upcoming" ? "blue" : status === "Ongoing" ? "green" : "red"}>{status}</Tag>;
-      }
+        const status = checkClassStatus(
+          record.date,
+          record.startTime,
+          record.endTime
+        );
+        return (
+          <Tag
+            color={
+              status === "Upcoming"
+                ? "blue"
+                : status === "Ongoing"
+                ? "green"
+                : "red"
+            }
+          >
+            {status}
+          </Tag>
+        );
+      },
     },
     {
       title: "Status",
       dataIndex: "status",
       key: "status",
       render: (status) => <Tag>{status}</Tag>,
-    }
+    },
   ];
   return (
     <div className=" bg-white rounded-lg shadow-md h-full">
-      <h2 className="text-xl font-semibold p-4 bg-gray-200 rounded-t-lg">
-        Class Sessions
-      </h2>
+      <div className="p-4 bg-gray-200 rounded-t-lg">
+        <div className="flex justify-between items-center">
+          <h1 className="text-xl font-semibold ">Class Sessions</h1>
+          <div>
+
+            <p>Total: {sessions.length} / {clazz?.totalSessions}</p>
+          </div>
+        </div>
+        <div className="flex gap-4">
+          <Dropdown
+            placement="bottomRight"
+            menu={{ items: itemsTeacher }}
+            trigger={["click"]}
+          >
+            <Button
+              icon={<FaChalkboardTeacher />}
+              disabled={!isAllowAssign}
+              type="default"
+              
+              onClick={(e) => e.preventDefault()}
+            >
+              Assign Teacher
+            </Button>
+          </Dropdown>
+          <Dropdown
+            placement="bottomRight"
+            menu={{ items: itemsRoom }}
+            trigger={["click"]}
+          >
+            <Button
+              icon={<FaDoorOpen />}
+              disabled={!isAllowAssign}
+              type="default"
+             
+              onClick={(e) => e.preventDefault()}
+            >
+              Assign Room
+            </Button>
+          </Dropdown>
+        </div>
+      </div>
       {notShow ? (
         <p className="text-gray-500 p-4">No sessions available</p>
       ) : (
@@ -113,7 +268,6 @@ const ClassSessions = () => {
           rowKey="id"
           pagination={false}
           loading={isLoading}
-          
         />
       )}
     </div>

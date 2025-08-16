@@ -14,8 +14,7 @@ const ClassHeaderDetails = () => {
 
   const isAllowReady =
     clazz?.status === "DRAFT" && clazz?.schedules?.length > 0;
-  const isAllowAssign =
-    clazz?.status !== "DRAFT" && clazz?.status !== "CANCELLED";
+  
   const [isOpenMarkClassOnReady, setIsOpenMarkClassOnReady] = useState(false);
  
   const dispatch = useAppDispatch();
@@ -25,56 +24,7 @@ const ClassHeaderDetails = () => {
       ? "Class must be in Draft status to Ready"
       : "At least one schedule is required"
     : "";
-  const items: MenuProps["items"] = [
-    {
-      label: <a onClick={(e) => {
-        e.preventDefault();
-        dispatch(setAssignTeacherModal({open: true, mode: 'by-clazz', clazzId: clazz?.id}));
-      }}>All Sessions</a>,
-      key: "0",
-    },
-    {
-      label: (
-        <Link to={`/admin/classes/details/${clazz?.id}`}>
-          Classified by schedule
-        </Link>
-      ),
-      key: "1",
-    },
-    {
-      label: (
-        <Link to={`/admin/classes/details/${clazz?.id}/sessions`}>
-          Specific lesson
-        </Link>
-      ),
-      key: "2",
-    },
-  ];
-  const itemsRoom: MenuProps["items"] = [
-    {
-      label: <a onClick={(e) => {
-        e.preventDefault();
-        dispatch(setAssignRoomModal({open: true, mode: 'by-clazz', clazzId: clazz?.id}));
-      }}>All Sessions</a>,
-      key: "0",
-    },
-    {
-      label: (
-        <Link to={`/admin/classes/details/${clazz?.id}`}>
-          Classified by schedule
-        </Link>
-      ),
-      key: "1",
-    },
-    {
-      label: (
-        <Link to={`/admin/classes/details/${clazz?.id}/sessions`}>
-          Specific lesson
-        </Link>
-      ),
-      key: "2",
-    },
-  ];
+
   return (
     <header className="sticky top-0 z-10 h-max bg-white p-2 shadow">
       <div className="flex justify-end items-center gap-4">
@@ -88,28 +38,7 @@ const ClassHeaderDetails = () => {
             {clazz?.status === "READY" ? "Readied" : "Not Ready"}
           </Button>
         </Tooltip>
-        <Dropdown placement="bottomRight" menu={{ items }} trigger={["click"]}>
-          <Button
-            icon={<DownOutlined />}
-            disabled={!isAllowAssign}
-            type="primary"
-            size="large"
-            onClick={(e) => e.preventDefault()}
-          >
-            Assign Teacher
-          </Button>
-        </Dropdown>
-        <Dropdown placement="bottomRight" menu={{ items: itemsRoom }} trigger={["click"]}>
-          <Button
-            icon={<DownOutlined />}
-            disabled={!isAllowAssign}
-            type="primary"
-            size="large"
-            onClick={(e) => e.preventDefault()}
-          >
-            Assign Room
-          </Button>
-        </Dropdown>
+       
       </div>
       <MarkClassOnReadyModal
         isOpen={isOpenMarkClassOnReady}
