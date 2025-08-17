@@ -123,20 +123,20 @@ const MarkClassOnReadyModal = ({ isOpen, onClose }: Props) => {
               required: true,
               message: "Please select a start date",
             },
-            {
-              validator: (rule, value) => {
-                const now = new Date();
-                const today = new Date(
-                  now.getFullYear(),
-                  now.getMonth(),
-                  now.getDate()
-                );
-                if (value && value < today) {
-                  return Promise.reject("Start date cannot be in the past");
-                }
-                return Promise.resolve();
-              },
-            },
+            // {
+            //   validator: (rule, value) => {
+            //     const now = new Date();
+            //     const today = new Date(
+            //       now.getFullYear(),
+            //       now.getMonth(),
+            //       now.getDate()
+            //     );
+            //     if (value && value < today) {
+            //       return Promise.reject("Start date cannot be in the past");
+            //     }
+            //     return Promise.resolve();
+            //   },
+            // },
           ]}
         >
           <DatePicker format={"MM/DD/YYYY"} />

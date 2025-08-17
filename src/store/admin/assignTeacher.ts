@@ -154,6 +154,7 @@ const assignTeacherSlide = createSlice({
         state.scheduleId = undefined;
       }
     },
+   
   },
   name: "admin/assignTeacher",
   extraReducers: (builder) => {

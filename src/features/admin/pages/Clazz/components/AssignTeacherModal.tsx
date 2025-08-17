@@ -9,8 +9,8 @@ import {
 import Loading from "../../../../../components/common/Loading";
 import { useLocation } from "react-router-dom";
 import type { IUser } from "../../../../../store/authSlide";
-import { setClazz } from "../../../../../store/admin/classDetails";
-import { fetchClassSessionsByClassId } from "../../../../../store/admin/classSessions";
+import { setClazz, type IClassSession } from "../../../../../store/admin/classDetails";
+import { fetchClassSessionsByClassId, setClassSessions } from "../../../../../store/admin/classSessions";
 const style: React.CSSProperties = {
   display: 'flex',
   flexDirection: 'column',
@@ -84,6 +84,12 @@ const AssignTeacherModal = () => {
           break;
         case "by-session":
           // Handle success for by-session
+          dispatch(setClassSessions((pre: IClassSession[]) => pre.map((session) => {
+            if (session.id === targetId) {
+              return { ...session, teacher: selectedTeacher };
+            }
+            return session;
+          })));
           break;
       }
       

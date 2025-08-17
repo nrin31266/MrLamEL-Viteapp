@@ -2,7 +2,7 @@
 import { Button, Table, Tag } from 'antd';
 import ClassControlPanel from './components/ClassControlPanel'
 import { useLocation, useNavigate, useSearchParams  } from 'react-router-dom';
-import { fetchClazzes, type IClazz } from '../../../../store/admin/classManagement';
+import { fetchClazzes, type IClassSchedule, type IClazz } from '../../../../store/admin/classManagement';
 import { useAppDispatch, useAppSelector } from '../../../../store/store';
 import type { ColumnProps } from 'antd/es/table';
 import { useEffect } from 'react';
@@ -16,21 +16,22 @@ import type { IRoomDto } from '../../../../store/admin/roomSlide';
 export const getClassStatusValue = (status: string) => {
   switch (status) {
     case "DRAFT":
-      return { value: "Draft", color: "#FFA500" }; // Orange
+      return { value: "Draft", color: "#FF8C00" }; // Dark Orange
     case "READY":
-      return { value: "Ready", color: "#008000" }; // Green
+      return { value: "Ready", color: "#228B22" }; // Forest Green
     case "OPEN":
-      return { value: "Open", color: "#0000FF" }; // Blue
+      return { value: "Open", color: "#1E90FF" }; // Dodger Blue
     case "ONGOING":
-      return { value: "Ongoing", color: "#FFFF00" }; // Yellow
+      return { value: "Ongoing", color: "#FFD700" }; // Goldenrod (đậm hơn vàng tươi)
     case "FINISHED":
-      return { value: "Finished", color: "#808080" }; // Gray
+      return { value: "Finished", color: "#696969" }; // Dim Gray
     case "CANCELLED":
-      return { value: "Cancelled", color: "#FF0000" }; // Red
+      return { value: "Cancelled", color: "#B22222" }; // Firebrick
     default:
-      return { value: "Unknown", color: "#000000" }; // Black
+      return { value: "Unknown", color: "#333333" }; // Dark Gray
   }
 };
+
 
 const ClassManagement = () => {
     // You can manage searchParams and setSearchParams here if needed
@@ -77,6 +78,42 @@ const ClassManagement = () => {
 
         </div>
       ),
+    },
+    {
+      dataIndex: "schedules",
+      key: "schedules",
+      title: "Schedules",
+      render: (schedules: IClassSchedule[]) => (
+        <div>
+          {schedules.map((schedule) => (
+            <div key={schedule.id}>
+              <span className="font-semibold">{schedule.dayOfWeek}</span>
+              {" "}
+              <span>{schedule.startTime}-{schedule.endTime}</span>
+            </div>
+          ))}
+        </div>
+      ),
+    },
+    {
+      dataIndex: "",
+      title: "Time",
+      render: (_, record) => <div>
+        <p>Start: {record.startDate}</p>
+        <p>End: {record.endDate}</p>
+      </div>
+    },
+    {
+      dataIndex: "totalSessions",
+      key: "totalSessions",
+      title: "Total Sessions",
+      render: (totalSessions: number) => (<Tag>{totalSessions}</Tag>)
+    },
+    {
+      dataIndex: "maxSeats",
+      key: "maxSeats",
+      title: "Max Seats",
+      render: (maxSeats: number) => (<Tag>{maxSeats}</Tag>)
     },
     {
       title: "Status",

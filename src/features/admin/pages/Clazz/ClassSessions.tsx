@@ -13,7 +13,7 @@ import { type IClassSession } from "./../../../../store/admin/classDetails";
 import { setAssignTeacherModal } from "../../../../store/admin/assignTeacher";
 import { FaChalkboardTeacher, FaDoorOpen } from "react-icons/fa";
 import { setAssignRoomModal } from "../../../../store/admin/assignRoom";
-import { DownOutlined } from "@ant-design/icons";
+import { TbListDetails } from "react-icons/tb";
 const checkClassStatus = (date: string, start: string, end: string) => {
   // date: "YYYY-MM-DD", start/end: "HH:mm"
   const now = dayjs();
@@ -215,6 +215,59 @@ const ClassSessions = () => {
       key: "status",
       render: (status) => <Tag>{status}</Tag>,
     },
+    {
+      title: "Actions",
+      key: "actions",
+      render: (_, record) => (
+        <div className="flex gap-1">
+          <Button
+            type="default"
+            size="small"
+            icon={<FaDoorOpen />}
+            hidden={
+              !isAllowAssign ||
+              dayjs(record.date).isBefore(dayjs()) ||
+              (dayjs(record.endTime).isSame(dayjs()) && dayjs(record.startTime).isBefore(dayjs()))
+            }
+            onClick={() => {
+              dispatch(
+                setAssignRoomModal({
+                  open: true,
+                  mode: "by-session",
+                  sessionId: record.id,
+                })
+              );
+            }}
+          ></Button>
+          <Button
+            type="default"
+            className="w-20"
+            size="small"
+            icon={<FaChalkboardTeacher />}
+            hidden={!isAllowAssign || dayjs(record.date).isBefore(dayjs()) || (dayjs(record.endTime).isSame(dayjs()) && dayjs(record.startTime).isBefore(dayjs()))}
+            onClick={() => {
+              dispatch(
+                setAssignTeacherModal({
+                  open: true,
+                  mode: "by-session",
+                  sessionId: record.id,
+                })
+              );
+            }}
+          ></Button>
+          <Button
+            type="default"
+            className="w-20"
+            size="small"
+            icon={<TbListDetails />}
+            // hidden={!isAllowAssign || dayjs(record.date).isBefore(dayjs()) || (dayjs(record.endTime).isSame(dayjs()) && dayjs(record.startTime).isBefore(dayjs()))}
+            onClick={() => {
+            // Sau
+            }}
+          ></Button>
+        </div>
+      ),
+    },
   ];
   return (
     <div className=" bg-white rounded-lg shadow-md h-full">
@@ -222,8 +275,9 @@ const ClassSessions = () => {
         <div className="flex justify-between items-center">
           <h1 className="text-xl font-semibold ">Class Sessions</h1>
           <div>
-
-            <p>Total: {sessions.length} / {clazz?.totalSessions}</p>
+            <p>
+              Total: {sessions.length} / {clazz?.totalSessions}
+            </p>
           </div>
         </div>
         <div className="flex gap-4">
@@ -236,7 +290,6 @@ const ClassSessions = () => {
               icon={<FaChalkboardTeacher />}
               disabled={!isAllowAssign}
               type="default"
-              
               onClick={(e) => e.preventDefault()}
             >
               Assign Teacher
@@ -251,7 +304,6 @@ const ClassSessions = () => {
               icon={<FaDoorOpen />}
               disabled={!isAllowAssign}
               type="default"
-             
               onClick={(e) => e.preventDefault()}
             >
               Assign Room

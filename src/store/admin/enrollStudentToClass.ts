@@ -33,11 +33,13 @@ interface IEnrollStudentToClassState {
       enrollments: boolean
       addStudent: boolean
       checkStudent: boolean
+      removeStudent: boolean
     }
     errors: {
         enrollments?: string | null
         addStudent?: string | null
         checkStudent?: string | null
+        removeStudent?: string | null
     }
 }
 const initialState: IEnrollStudentToClassState = {
@@ -46,12 +48,14 @@ const initialState: IEnrollStudentToClassState = {
     loadings: {
         enrollments: false,
         addStudent: false,
-        checkStudent: false
+        checkStudent: false,
+        removeStudent: false
     },
     errors: {
         enrollments: null,
         addStudent: null,
-        checkStudent: null
+        checkStudent: null,
+        removeStudent: null
     }
 };
 export const checkStudentBeforeAddingToClass = createAsyncThunk<ICheckStudentDto, { studentEmail: string; classId: number }>(
@@ -104,6 +108,27 @@ export const fetchClassEnrollments = createAsyncThunk<
         }
     }
 );
+//  @DeleteMapping("/{classId}/users/{studentId}")
+//     public ApiRes<Void> removeStudentFromClass(@PathVariable Long classId, @PathVariable Long studentId) {
+//         log.info("Removing student with ID: {} from class with ID: {}", studentId, classId);
+//         classService.removeStudentFromClass(classId, studentId);
+//         return ApiRes.success(null);
+//     }
+export const removeStudentFromClass = createAsyncThunk<void, { classId: number; studentId: number }>(
+    "admin/enrollStudent/removeStudentFromClass",
+    async (params, { rejectWithValue }) => {
+        try {
+            await handleAPI<void>({
+                method: "DELETE",
+                endpoint: `/api/v1/classes/${params.classId}/users/${params.studentId}`,
+                isAuth: true
+            });
+        } catch (error) {
+            return rejectWithValue(ErrorUtils.extractErrorMessage(error));
+        }
+    }
+);
+
 const enrollStudentToClassSlice = createSlice({
     name: "admin/enrollStudent",
     initialState,
@@ -133,7 +158,7 @@ const enrollStudentToClassSlice = createSlice({
             })
             .addCase(addStudentToClass.fulfilled, (state, action) => {
                 state.loadings.addStudent = false;
-                state.enrollments.push(action.payload);
+                state.enrollments = [...state.enrollments, action.payload];
             })
             .addCase(addStudentToClass.rejected, (state, action) => {
                 state.loadings.addStudent = false;
@@ -150,6 +175,20 @@ const enrollStudentToClassSlice = createSlice({
             .addCase(fetchClassEnrollments.rejected, (state, action) => {
                 state.loadings.enrollments = false;
                 state.errors.enrollments = action.payload as string;
+            })
+            .addCase(removeStudentFromClass.pending, (state) => {
+                state.loadings.removeStudent = true;
+                state.errors.removeStudent = null;
+            })
+            .addCase(removeStudentFromClass.fulfilled, (state, action) => {
+                state.loadings.removeStudent = false;
+                state.enrollments = state.enrollments.filter(
+                    (enrollment) => enrollment.attendee.id !== action.meta.arg.studentId
+                );
+            })
+            .addCase(removeStudentFromClass.rejected, (state, action) => {
+                state.loadings.removeStudent = false;
+                state.errors.removeStudent = action.payload as string;
             });
     }
 });

@@ -6,20 +6,22 @@ import type { IRoomDto } from "./roomSlide";
 import type { IUser } from "../authSlide";
 import type { IClassSession } from "./classDetails";
 
-interface IClassSessionState{
+interface IClassSessionState {
   classSessions: IClassSession[];
   clazzId: number;
-  loadings:{
+  loadings: {
     fetchClassSessions: boolean;
   };
-  errors:{
+  errors: {
     fetchClassSessions: string | null;
   };
 }
-  export const fetchClassSessionsByClassId = createAsyncThunk<
-    IClassSession[],
-    number
-  >("classSessions/fetchClassSessionsByClassId", async (classId, { rejectWithValue }) => {
+export const fetchClassSessionsByClassId = createAsyncThunk<
+  IClassSession[],
+  number
+>(
+  "classSessions/fetchClassSessionsByClassId",
+  async (classId, { rejectWithValue }) => {
     try {
       const data = await handleAPI<IClassSession[]>({
         method: "GET",
@@ -30,7 +32,8 @@ interface IClassSessionState{
     } catch (error) {
       return rejectWithValue(ErrorUtils.extractErrorMessage(error));
     }
-  });
+  }
+);
 
 const initialState: IClassSessionState = {
   classSessions: [],
@@ -47,8 +50,14 @@ const classDetailsSlice = createSlice({
   initialState,
   reducers: {
     setClassSessions: (state, action) => {
-      state.classSessions = action.payload;
+      if (typeof action.payload === "function") {
+        // truyền state.classSessions hiện tại vào để tính ra giá trị mới
+        state.classSessions = action.payload(state.classSessions);
+      } else {
+        state.classSessions = action.payload;
+      }
     },
+
     setClazzId: (state, action) => {
       state.clazzId = action.payload;
     },
@@ -70,6 +79,6 @@ const classDetailsSlice = createSlice({
   },
 });
 
-export const { setClazzId } = classDetailsSlice.actions;
+export const { setClazzId, setClassSessions } = classDetailsSlice.actions;
 
 export default classDetailsSlice.reducer;

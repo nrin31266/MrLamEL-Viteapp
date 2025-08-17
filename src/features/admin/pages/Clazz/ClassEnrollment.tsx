@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import UserEnrollmentModal from "./components/UserEnrollmentModal";
-import { Button, Table } from "antd";
+import { Button, message, Modal, Table } from "antd";
 import { FaUserPlus } from "react-icons/fa6";
 import { useAppDispatch, useAppSelector } from "../../../../store/store";
 import {
   fetchClassEnrollments,
+  removeStudentFromClass,
   setClassIdForEnrollments,
   type IClassEnrollment,
 } from "../../../../store/admin/enrollStudentToClass";
@@ -23,13 +24,39 @@ const ClassEnrollment = () => {
   const { classId, enrollments } = useAppSelector(
     (state) => state.admin.enrollStudent
   );
-
+  const allowEnroll = (clazz?.status === "READY" || clazz?.status === "ONGOING") && clazz?.maxSeats > enrollments.length ;
+  const allowRemove = (clazz?.status === "READY" || clazz?.status === "ONGOING") && enrollments.length > 0;
   useEffect(() => {
     if (clazz?.id && classId !== clazz.id) {
       dispatch(fetchClassEnrollments(clazz.id));
       dispatch(setClassIdForEnrollments({ clazzId: clazz.id }));
     }
   }, [clazz?.id, classId]);
+
+  const handleRemoveStudent = async (record: IClassEnrollment) => {
+    if (allowRemove && classId) {
+      Modal.confirm({
+        title: "Remove Student",
+        content: "Are you sure you want to remove this student from the class?",
+        onOk: async () => {
+          await dispatch(removeStudentFromClass({ classId, studentId: record.attendee.id })).unwrap().then(() => {
+            message.success("Student removed successfully");
+          }).catch((error) => {
+            message.error(error);
+          });
+        },
+      });
+    }
+  };
+
+  const sortedData = enrollments.length > 0 
+  ? [...enrollments].sort((a, b) => {
+      const nameA = a.attendee.fullName.trim().split(/\s+/).pop() || "";
+      const nameB = b.attendee.fullName.trim().split(/\s+/).pop() || "";
+      return nameA.localeCompare(nameB, "vi", { sensitivity: "base" });
+    }) 
+  : [];
+
 
   const columns: ColumnProps<IClassEnrollment>[] = [
     {
@@ -66,6 +93,24 @@ const ClassEnrollment = () => {
       render: (enrolledAt) =>
         enrolledAt ? dayjs(enrolledAt).format("ddd DD/MM/YYYY HH:mm") : "N/A",
     },
+    {
+      dataIndex: "",
+      title: "Actions",
+      align: "right",
+      fixed: "right",
+      render: (_, record) => (
+        <div>
+          <Button
+            type="link"
+            danger
+            onClick={() => handleRemoveStudent(record)}
+            disabled={!allowRemove}
+          >
+            Remove
+          </Button>
+        </div>
+      )
+    }
   ];
 
   return (
@@ -83,6 +128,7 @@ const ClassEnrollment = () => {
               icon={<FaUserPlus />}
               type="default"
               onClick={() => setOpenClassEnrollmentModal(true)}
+              disabled={!allowEnroll}
             >
               Add students to the class
             </Button>
@@ -91,7 +137,7 @@ const ClassEnrollment = () => {
         <div>
           <Table
             columns={columns}
-            dataSource={enrollments || []}
+            dataSource={sortedData || []}
             rowKey="id"
             pagination={false}
             loading={loading}

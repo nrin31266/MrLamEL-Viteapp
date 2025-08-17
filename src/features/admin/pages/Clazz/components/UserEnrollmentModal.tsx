@@ -62,6 +62,7 @@ const UserEnrollmentModal: React.FC<UserEnrollmentModalProps> = ({
     }
     setSearchTerm("");
     setCheckStudentDto(undefined);
+    form.resetFields();
     message.success("Student added successfully!");
     onClose();
   };
