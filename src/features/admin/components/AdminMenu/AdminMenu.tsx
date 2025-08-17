@@ -89,6 +89,7 @@ const AdminMenu: React.FC<AdminMenuProps> = ({ collapsed, onCollapse }) => {
     if (path.startsWith('/admin/users')) openKeys.push('sub3');
     return openKeys;
   };
+  
 
   return (
     <div className="h-full bg-white flex flex-col">

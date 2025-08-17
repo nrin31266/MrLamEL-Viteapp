@@ -6,12 +6,14 @@ import { useDispatch, useSelector, type TypedUseSelectorHook } from 'react-redux
 import authSlide from './authSlide';
 import adminReducer from './admin';
 import commonReducer from './common';
+import teacherReducer from './teacher';
 
 
 const rootReducer = combineReducers({
   auth: authSlide,
   admin: adminReducer,
-  common: commonReducer
+  common: commonReducer,
+  teacher: teacherReducer
 });
 
 

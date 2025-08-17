@@ -25,6 +25,10 @@ import ClassOverview from "../features/admin/pages/Clazz/ClassOverview";
 import Holidays from "../features/common/pages/Holidays";
 import ClassSessions from "../features/admin/pages/Clazz/ClassSessions";
 import ClassEnrollment from "../features/admin/pages/Clazz/ClassEnrollment";
+import TeacherLayout from "../features/teacher/layout/TeacherLayout";
+import TeacherProfile from "../features/teacher/pages/Profile/TeacherProfile";
+import TimeTableWeekly from "../features/teacher/pages/TimeTable/TimeTableWeekly";
+import TimeTable from "../features/teacher/pages/TimeTable/TimeTable";
 
 const AppRouter = () => {
   return (
@@ -102,7 +106,11 @@ const AppRouter = () => {
 
         {/* Route chỉ dành cho User */}
         <Route element={<AuthGuard allowedRoles={["TEACHER"]} />}>
-          <Route path="/teacher/*" element={<div>Teacher Layout</div>} />
+          <Route path="/teacher" element={<TeacherLayout />} >
+            <Route path="timetable" element={<TimeTable />} />
+            <Route path="timetable/weekly" element={<TimeTableWeekly />} />
+            <Route path="profile" element={<TeacherProfile />} />
+          </Route>
         </Route>
         {/* Route chỉ dành cho Student */}
         <Route element={<AuthGuard allowedRoles={["STUDENT"]} />}>

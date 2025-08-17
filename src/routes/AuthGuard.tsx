@@ -90,7 +90,7 @@ const getDefaultRouteByRole = (role: "ADMIN" | "TEACHER" | "STUDENT") => {
     case "ADMIN":
       return "/admin";
     case "TEACHER":
-      return "/teacher";
+      return "/teacher/timetable";
     case "STUDENT":
       return "/student";
     default:

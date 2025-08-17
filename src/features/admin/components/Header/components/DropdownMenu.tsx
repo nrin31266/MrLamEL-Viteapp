@@ -14,7 +14,6 @@ const useDropdownItems = (): MenuProps["items"] => {
     await dispatch(logout())
       .unwrap()
       .then(() => {
-        dispatch(resetAuthState());
         navigate("/auth/login", { replace: true });
       });
   };

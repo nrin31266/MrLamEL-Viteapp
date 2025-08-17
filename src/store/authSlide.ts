@@ -378,6 +378,7 @@ const authSlice = createSlice({
       .addCase(logout.fulfilled, (state) => {
         localStorage.removeItem("accessToken");
         state.loadings.logout = false;
+        state.user = null;
       })
 
   },
