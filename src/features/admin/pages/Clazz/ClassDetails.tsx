@@ -51,7 +51,7 @@ const ClassDetails = () => {
 
   return (
     <div className="grid gap-4 grid-cols-[16rem_1fr]">
-      <div className="bg-white p-4 rounded-md shadow-sm  sticky h-[calc(100vh-8rem)] top-6">
+      <div className="bg-white p-4 rounded-md shadow-sm  h-max top-6 sticky  z-10 ">
         <div>
           <h1 className="text-xl font-semibold">Menu</h1>
           <Menu

@@ -1,8 +1,11 @@
 import React from 'react'
+import TimeTableDaily from './TimeTableDaily'
 
 const TimeTable = () => {
   return (
-    <div>TimeTable</div>
+    <div>
+      <TimeTableDaily />
+    </div>
   )
 }
 

@@ -3,16 +3,17 @@ import { useAppSelector } from '../../../../store/store';
 import { CurrencyUtils } from '../../../../utils/CurrencyUtils';
 import { Avatar, Button } from 'antd';
 import ScheduleSession from './components/ScheduleSession';
+import ManagersForClassSession from './components/ManagersForClassSession';
 
 const ClassOverview = () => {
   const clazz = useAppSelector((state) => state.admin.classDetails.clazz);
   if (!clazz) return null;
   return (
-    <div>
+    <div className='space-y-4'>
       <div className='bg-white  rounded-lg shadow-md'>
         <h1 className='text-xl font-bold bg-gray-200 rounded-t-lg p-4'>Class Overview</h1>
         <div className='p-4 grid grid-cols-12'>
-          <div className='col-span-12 mb-4'>
+          <div className='col-span-12'>
             <Avatar key={clazz.id} src={clazz.avatarUrl} 
             className='!h-42 !w-42' shape='square'
             alt={clazz.name} />
@@ -37,7 +38,7 @@ const ClassOverview = () => {
           </p>
         </div>
       </div>
-      <div className='bg-white  rounded-lg shadow-md mt-4'>
+      <div className='bg-white  rounded-lg shadow-md'>
         <h1 className='text-xl font-bold bg-gray-200 rounded-t-lg p-4'>Course</h1>
         <div className='p-4'>
           <p>
@@ -52,6 +53,7 @@ const ClassOverview = () => {
         </div>
       </div>
      <ScheduleSession clazz={clazz} />
+     <ManagersForClassSession clazz={clazz} />
     </div>
   )
 }

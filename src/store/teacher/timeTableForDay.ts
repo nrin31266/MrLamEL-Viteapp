@@ -93,8 +93,55 @@ import type { ISessionDto } from "./timeTableForWeek"
 // export const { } = timeTableForWeekSlice.actions;
 
 // export default timeTableForWeekSlice.reducer;
-interface iTimeTableForDayState {
+interface ITimeTableForDayState {
   sessions: ISessionDto[]
   loading: boolean
   error: string | null
 }
+const initialState: ITimeTableForDayState = {
+  sessions: [],
+  loading: false,
+  error: null
+}
+
+export const fetchTimeTableForTeacherByDay = createAsyncThunk<ISessionDto[], { teacherId: number, date: string }>(
+  "teacher/timeTableForDay",
+  async (params, { rejectWithValue }) => {
+    try {
+      const data = await handleAPI<ISessionDto[]>({
+        endpoint: `/api/v1/teacher/classes/${params.teacherId}/time-table/day`,
+        method: "GET",
+        params: { date: params.date },
+        isAuth: true,
+      });
+      return data
+    } catch (error) {
+      return rejectWithValue(ErrorUtils.extractErrorMessage(error));
+    }
+  }
+);
+
+const timeTableForDaySlice = createSlice({
+  name: "timeTableForDay",
+  initialState,
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchTimeTableForTeacherByDay.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchTimeTableForTeacherByDay.fulfilled, (state, action) => {
+        state.loading = false;
+        state.sessions = action.payload;
+      })
+      .addCase(fetchTimeTableForTeacherByDay.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      });
+  },
+});
+
+export const { } = timeTableForDaySlice.actions;
+
+export default timeTableForDaySlice.reducer;

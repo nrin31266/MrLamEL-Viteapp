@@ -14,7 +14,7 @@ import { setAssignTeacherModal } from "../../../../store/admin/assignTeacher";
 import { FaChalkboardTeacher, FaDoorOpen } from "react-icons/fa";
 import { setAssignRoomModal } from "../../../../store/admin/assignRoom";
 import { TbListDetails } from "react-icons/tb";
-const checkClassStatus = (date: string, start: string, end: string) => {
+ const checkClassStatus = (date: string, start: string, end: string) => {
   // date: "YYYY-MM-DD", start/end: "HH:mm"
   const now = dayjs();
 

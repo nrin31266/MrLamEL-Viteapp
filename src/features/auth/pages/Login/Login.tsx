@@ -29,14 +29,19 @@ const Login = () => {
         </p>
       </div>
       <Form
-        name="login"
+        name="loginForm"
+        
         // labelCol={{ span: 8 }}
         // wrapperCol={{ span: 16 }}
         className="w-auto md:w-96"
-        initialValues={{ remember: true }}
+        // initialValues={{ remember: true }}
         onFinish={onFinish}
         // onFinishFailed={onFinishFailed}
-        // autoComplete="off"
+        autoComplete="on"
+        initialValues={{
+          remember: true,
+          status: "OK", // Set initial value for status here
+        }}
         layout="horizontal"
         disabled={loadings.login}
         size="large"

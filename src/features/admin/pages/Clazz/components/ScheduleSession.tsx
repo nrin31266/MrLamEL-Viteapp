@@ -53,23 +53,6 @@ const ScheduleSession: React.FC<ScheduleSessionProps> = ({ clazz }) => {
                       <p className='font-semibold'>{`Schedule ${index + 1}`}</p>
                       <p className='text-gray-600'>{`Day: ${schedule.dayOfWeek}`}</p>
                       <p className='text-gray-600'>{`Time: ${schedule.startTime} - ${schedule.endTime}`}</p>
-                      <p><span className='font-semibold'>Teacher: </span>
-                      <span>{schedule.teacher ? schedule.teacher.id + '- ' + schedule.teacher.fullName + ' (' + schedule.teacher.email + ')' : 'Not assigned'}</span>
-                      </p>
-                      <p><span className='font-semibold'>Room: </span>
-                      <span>
-                        {schedule.room 
-                          ? `${schedule.room.code} - ${schedule.room.name} (Capacity: ${schedule.room.capacity})`
-                          : 'Not assigned'}
-                      </span>
-                      </p>
-                      {schedule.room?.branch && (
-                        <p><span className='font-semibold'>Branch: </span>
-                        <span>
-                          {`${schedule.room.branch.name}, ${schedule.room.branch.address} (Phone: ${schedule.room.branch.phone})`}
-                        </span>
-                        </p>
-                      )}
                     </div>
                     <div className='flex gap-4'>
                       <Button disabled={!isAllowUpdate} hidden={!isAllowUpdate} type="link" onClick={() => {

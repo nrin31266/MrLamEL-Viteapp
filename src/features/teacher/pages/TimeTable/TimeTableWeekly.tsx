@@ -9,6 +9,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import dayjs from "dayjs";
 import { getColorByName } from "../../../../utils/colorUtils";
+import LoadingOverlay from "../../../../components/common/LoadingOverlay";
 
 const TimeTableWeekly = () => {
   const dispatch = useAppDispatch();
@@ -47,27 +48,28 @@ const TimeTableWeekly = () => {
   return (
     <div className="relative bg-white px-1 py-4 rounded-md shadow">
       {loading && (
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "50vh",
-            backgroundColor: "rgba(255, 255, 255, 0.8)",
-            zIndex: 10,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Spin size="large" />
-        </div>
+        <LoadingOverlay/>
       )}
-      <h1 className="text-2xl font-semibold">{weekNumber === 0 ? "Current Week" : weekNumber === 1 ? "Next Week" : weekNumber === -1 ? "Previous Week" :
-        weekNumber > 1 ? `The next ${weekNumber} weeks` : `The previous ${-weekNumber} weeks`}
-        {" (" + dayjs(weekStartDate).format("DD/MM/YYYY") + " - " + dayjs(weekEndDate).format("DD/MM/YYYY") + ")"}</h1>
-      <div style={{ overflowX: "auto", minWidth: "1400px" }}>
+      <h1 className="text-2xl font-semibold">
+        {weekNumber === 0
+          ? "Current Week"
+          : weekNumber === 1
+          ? "Next Week"
+          : weekNumber === -1
+          ? "Previous Week"
+          : weekNumber > 1
+          ? `The next ${weekNumber} weeks`
+          : `The previous ${-weekNumber} weeks`}
+        {" (" +
+          dayjs(weekStartDate).format("DD/MM/YYYY") +
+          " - " +
+          dayjs(weekEndDate).format("DD/MM/YYYY") +
+          ")"}
+      </h1>
+      <div
+        style={{ overflowX: "auto", minWidth: "1400px", maxWidth: "100%" }}
+        className="bg-white"
+      >
         <FullCalendar
           ref={calendarRef}
           plugins={[timeGridPlugin, interactionPlugin, dayGridPlugin]}
@@ -95,8 +97,7 @@ const TimeTableWeekly = () => {
                 <div>
                   <b>{session?.clazz?.name}</b>
                 </div>
-                <div>👨‍🏫 {session?.teacher?.fullName}</div>
-                <div>📍 Room: {session?.room?.code}</div>
+                <div>📍 Room: {session?.room?.code} {session?.room.branch.address}</div>
                 <div>
                   🕒 {session?.startTime} - {session?.endTime}
                 </div>
@@ -110,8 +111,9 @@ const TimeTableWeekly = () => {
                   <div className="text-sm font-bold truncate w-full text-center">
                     {session?.clazz?.name || "Unknown Class"}
                   </div>
-                  <div className="text-xs mt-0.5 italic opacity-90">
-                    {arg.timeText}
+                  <div className="mt-0.5 italic opacity-90 flex">
+                    <h4>{dayjs(session?.startTime, "HH:mm:ss").format("HH:mm")}</h4>-
+                    <h4>{dayjs(session?.endTime, "HH:mm:ss").format("HH:mm")}</h4>
                   </div>
                   <div className="text-[11px] mt-0.5 bg-white/20 px-1 py-0.5 rounded">
                     Room: {session?.room?.code || "?"}

@@ -26,6 +26,7 @@ export interface IClazz {
   createdBy: IUser
   maxSeats: number
   room: IRoomDto
+  managers: IUser[]
 }
 
 export interface ICreateClazzRequest {
