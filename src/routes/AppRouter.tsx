@@ -111,7 +111,7 @@ const AppRouter = () => {
             <Route path="timetable" element={<TimeTable />} />
             <Route path="timetable/weekly" element={<TimeTableWeekly />} />
             <Route path="profile" element={<TeacherProfile />} />
-            <Route path="attendance/:id" element={<Attendance />} />
+            <Route path="attendance/:sessionId" element={<Attendance />} />
           </Route>
         </Route>
         {/* Route chỉ dành cho Student */}

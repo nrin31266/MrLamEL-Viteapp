@@ -87,7 +87,8 @@ const ManagersForClassSession = ({ clazz }: Props) => {
               if (!adding) {
                 setTimeout(() => {
                   inputRef.current?.focus(); // Ensure focus is applied after state update
-                }, 0); // Delay to allow state change to complete
+                }, 0); // Dùng setTimeout(..., 0) sẽ đẩy việc gọi focus() sang microtask tiếp theo,
+                //  sau khi React đã render xong cái Input, đảm bảo ref đã có.
               }
             }}
           >

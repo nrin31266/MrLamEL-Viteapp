@@ -4,10 +4,6 @@ import { Button, Dropdown, Space, Tooltip, type MenuProps } from "antd";
 import MarkClassOnReadyModal from "./MarkClassOnReadyModal";
 import AssignTeacherModal from "./AssignTeacherModal";
 import AssignRoomModal from "./AssignRoomModal";
-import { DownOutlined } from "@ant-design/icons";
-import { Link } from "react-router-dom";
-import { setAssignTeacherModal } from "../../../../../store/admin/assignTeacher";
-import { setAssignRoomModal } from "../../../../../store/admin/assignRoom";
 
 const ClassHeaderDetails = () => {
   const clazz = useAppSelector((state) => state.admin.classDetails.clazz);

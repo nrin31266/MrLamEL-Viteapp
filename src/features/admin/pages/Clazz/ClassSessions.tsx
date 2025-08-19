@@ -224,11 +224,11 @@ const ClassSessions = () => {
             type="default"
             size="small"
             icon={<FaDoorOpen />}
-            hidden={
-              !isAllowAssign ||
-              dayjs(record.date).isBefore(dayjs()) ||
-              (dayjs(record.endTime).isSame(dayjs()) && dayjs(record.startTime).isBefore(dayjs()))
-            }
+            // hidden={
+            //   !isAllowAssign ||
+            //   dayjs(record.date).isBefore(dayjs()) ||
+            //   (dayjs(record.endTime).isSame(dayjs()) && dayjs(record.startTime).isBefore(dayjs()))
+            // }
             onClick={() => {
               dispatch(
                 setAssignRoomModal({
@@ -244,7 +244,7 @@ const ClassSessions = () => {
             className="w-20"
             size="small"
             icon={<FaChalkboardTeacher />}
-            hidden={!isAllowAssign || dayjs(record.date).isBefore(dayjs()) || (dayjs(record.endTime).isSame(dayjs()) && dayjs(record.startTime).isBefore(dayjs()))}
+            // hidden={!isAllowAssign || dayjs(record.date).isBefore(dayjs()) || (dayjs(record.endTime).isSame(dayjs()) && dayjs(record.startTime).isBefore(dayjs()))}
             onClick={() => {
               dispatch(
                 setAssignTeacherModal({
