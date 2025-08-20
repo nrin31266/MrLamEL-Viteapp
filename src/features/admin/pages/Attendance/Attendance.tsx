@@ -13,11 +13,8 @@ import {
 } from "antd";
 import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../../store/store";
-import {
-  ATTENDANCE_STATUS,
-  fetchAttendanceBySession,
-  markAttendanceStatus,
-} from "../../../../store/teacher/AttendanceSlide";
+import { ATTENDANCE_STATUS, fetchAttendanceBySession, markAttendanceStatus } from "../../../../store/admin/attendanceSlide";
+
 
 const Attendance = () => {
   const { sessionId } = useParams<{ sessionId: string }>();

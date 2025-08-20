@@ -93,6 +93,7 @@ const AppRouter = () => {
                 <Route index element={<ClassOverview/>} />
                 <Route path="sessions" element={<ClassSessions />} />
                 <Route path="participants" element={<ClassEnrollment />} />
+                <Route path="sessions/:sessionId/attendance" element={<Attendance />} />
               </Route>
               <Route path="tools" element={<Tools />} />
               <Route path="teachers" element={<div>Manage Teachers</div>} />

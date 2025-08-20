@@ -14,6 +14,7 @@ import { setAssignTeacherModal } from "../../../../store/admin/assignTeacher";
 import { FaChalkboardTeacher, FaDoorOpen } from "react-icons/fa";
 import { setAssignRoomModal } from "../../../../store/admin/assignRoom";
 import { TbListDetails } from "react-icons/tb";
+import { useNavigate } from "react-router-dom";
  const checkClassStatus = (date: string, start: string, end: string) => {
   // date: "YYYY-MM-DD", start/end: "HH:mm"
   const now = dayjs();
@@ -43,7 +44,7 @@ const ClassSessions = () => {
   const clazz = useAppSelector((state) => state.admin.classDetails.clazz);
   const notShow = clazz?.status === "DRAFT" || !clazz;
   const { clazzId } = useAppSelector((state) => state.admin.classSessions);
-
+  const navigate = useNavigate();
   const itemsTeacher: MenuProps["items"] = [
     {
       label: (
@@ -134,6 +135,8 @@ const ClassSessions = () => {
   ];
   const isAllowAssign =
     clazz?.status !== "DRAFT" && clazz?.status !== "CANCELLED";
+
+
 
   useEffect(() => {
     if (
@@ -260,9 +263,10 @@ const ClassSessions = () => {
             className="w-20"
             size="small"
             icon={<TbListDetails />}
-            // hidden={!isAllowAssign || dayjs(record.date).isBefore(dayjs()) || (dayjs(record.endTime).isSame(dayjs()) && dayjs(record.startTime).isBefore(dayjs()))}
+            hidden={record.date ? dayjs(record.date).isAfter(dayjs()) || (dayjs(record.endTime).isSame(dayjs())) : true}
             onClick={() => {
-            // Sau
+              // Navigate to the session details page
+              navigate(`/admin/classes/details/${clazz?.id}/sessions/${record.id}/attendance`);
             }}
           ></Button>
         </div>

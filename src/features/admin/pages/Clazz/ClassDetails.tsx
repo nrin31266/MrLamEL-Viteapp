@@ -39,8 +39,12 @@ const ClassDetails = () => {
     const path = location.pathname;
     // console.log("Current path for selected keys:", path);
     if (path.startsWith("/admin/classes/details/")) {
+      if(path.startsWith(`/admin/classes/details/${classId}/sessions`)) {
+        return [`/admin/classes/details/${classId}/sessions`];
+      }
       return [path];
     }
+    return [];
   };
   
   const handleMenuClick: MenuProps["onClick"] = (e) => {

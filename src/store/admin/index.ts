@@ -12,6 +12,7 @@ import assignRoomSlide from "./assignRoom";
 import enrollStudentToClassSlice from "./enrollStudentToClass";
 import classSessionsSlide from "./classSessions";
 import classPowerSlide from "./classPowerSlide";
+import attendanceSlide from "./attendanceSlide";
 const adminReducer = combineReducers({
   dashboard: dashboardSlide,
   branch: branchSlide,
@@ -26,6 +27,7 @@ const adminReducer = combineReducers({
   enrollStudent: enrollStudentToClassSlice,
   classSessions: classSessionsSlide,
   classPower: classPowerSlide,
+  attendance: attendanceSlide,
 });
 
 export default adminReducer;

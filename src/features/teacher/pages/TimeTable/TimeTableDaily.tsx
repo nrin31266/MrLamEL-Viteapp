@@ -160,6 +160,7 @@ const TimeTableDaily = () => {
                 dataSource={sessions || []}
                 pagination={false}
                 rowKey="id"
+                className="rounded-lg overflow-x-auto border border-gray-200"
                 locale={{
                   emptyText: (
                     <Empty
