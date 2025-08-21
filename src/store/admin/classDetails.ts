@@ -22,9 +22,15 @@ export interface IClassSession {
   room: IRoomDto
   note: string
   teacher: IUser
-  status: string
+  status: typeof EClassSessionStatus[keyof typeof EClassSessionStatus]
   createdAt: string
+  content: string
 }
+
+export const EClassSessionStatus = {
+  NOT_YET: "NOT_YET",
+  DONE: "DONE",
+} as const;
 export type EDayOfWeek =
   | "MONDAY"
   | "TUESDAY"

@@ -117,15 +117,42 @@ export const markAttendanceStatus = createAsyncThunk<IAttendance, { attendanceId
     }
   }
 );
+// @PutMapping("/{classSessionId}/learn")
+//     public ApiRes<Void> learnSession(
+//             @PathVariable Long classSessionId,
+//             @RequestBody String content,
+//             Authentication authentication
+//     ) {
+//         log.info("Learning session with ID: {}", classSessionId);
+//         classService.learnSession(classSessionId, content, authentication);
+//         return ApiRes.success(null);
+//     }
+export const learnSession = createAsyncThunk<void, { classSessionId: number; content: string }, { rejectValue: string }>(
+  "teacher/learnSession",
+  async (params, { rejectWithValue }) => {
+    try {
+      await handleAPI({
+        endpoint: `/api/v1/teacher/classes/${params.classSessionId}/learn`,
+        method: "PUT",
+        params: { content: params.content },
+        isAuth: true,
+      });
+    } catch (error) {
+      return rejectWithValue(ErrorUtils.extractErrorMessage(error));
+    }
+  }
+);
 interface IAttendanceSlideState {
   attendance: IAttendanceSessionDTO | null;
   loadings:{
     fetchAttendanceBySession: boolean;
     markAttendanceStatus: Record<number, boolean>;
+    learnSession?: boolean;
   }
   errors: {
     fetchAttendanceBySession: string | null;
     markAttendanceStatus: Record<number, string | null>;
+    learnSession: string | null;
   }
 }
 const initialState: IAttendanceSlideState = {
@@ -133,10 +160,12 @@ const initialState: IAttendanceSlideState = {
   loadings: {
     fetchAttendanceBySession: false,
     markAttendanceStatus: {},
+    learnSession: false,
   },
   errors: {
     fetchAttendanceBySession: null,
     markAttendanceStatus: {},
+    learnSession: null,
   },
 };
 const attendanceSlide = createSlice({
@@ -171,6 +200,16 @@ const attendanceSlide = createSlice({
         .addCase(markAttendanceStatus.rejected, (state, action) => {
           state.loadings.markAttendanceStatus[action.meta.arg.attendanceId] = false;
           state.errors.markAttendanceStatus[action.meta.arg.attendanceId] = action.payload as string;
+        })
+        .addCase(learnSession.pending, (state) => {
+          state.loadings.learnSession = true;
+        })
+        .addCase(learnSession.fulfilled, (state) => {
+          state.loadings.learnSession = false;
+        })
+        .addCase(learnSession.rejected, (state, action) => {
+          state.loadings.learnSession = false;
+          state.errors.learnSession = action.payload as string;
         });
     },
 });

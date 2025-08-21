@@ -27,6 +27,7 @@ export interface ISessionDto {
   status: string
   createdAt: string
   room: IRoomDto
+  content: string
 }
 interface ITimeTableForTeacherByWeekDto {
   weekNumber: number

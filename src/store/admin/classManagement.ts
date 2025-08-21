@@ -55,10 +55,12 @@ interface IClazzManagementState {
     create?: boolean;
     fetchCourses?: boolean;
     fetchRooms?: boolean;
+    remove?: boolean;
   }
   errors:{
     fetch?: string | null;
     create?: string | null;
+    remove?: string | null;
   }
 }
 const initialState: IClazzManagementState = {
@@ -172,6 +174,28 @@ export const fetchSelectRooms = createAsyncThunk("classManagement/fetchRooms", a
     return rejectWithValue(ErrorUtils.extractErrorMessage(error));
   }
 });
+
+    // @DeleteMapping("/{classId}")
+    // public ApiRes<Void> removeClass(@PathVariable Long classId) {
+    //     log.info("Removing class with ID: {}", classId);
+    //     classService.removeClass(classId);
+    //     return ApiRes.success(null);
+    // }
+    export const removeClazz = createAsyncThunk<void, number>(
+  "classManagement/removeClazz",
+  async (clazzId, { rejectWithValue }) => {
+    try {
+      await handleAPI<void>({
+        method: "DELETE",
+        endpoint: `/api/v1/classes/${clazzId}`,
+        isAuth: true,
+      });
+    } catch (error) {
+      return rejectWithValue(ErrorUtils.extractErrorMessage(error));
+    }
+  }
+);
+
 const classManagementSlice = createSlice({
   name: "classManagement",
   initialState,
@@ -219,6 +243,17 @@ const classManagementSlice = createSlice({
         })
         .addCase(fetchSelectRooms.rejected, (state, action) => {
           state.loadings.fetchRooms = false;
+        })
+        .addCase(removeClazz.pending, (state) => {
+          state.loadings.remove = true;
+        })
+        .addCase(removeClazz.fulfilled, (state, action) => {
+          state.loadings.remove = false;
+          state.page.content = state.page.content.filter((clazz) => clazz.id !== action.meta.arg);
+        })
+        .addCase(removeClazz.rejected, (state, action) => {
+          state.loadings.remove = false;
+          state.errors.remove = action.payload as string;
         });
   },
 });

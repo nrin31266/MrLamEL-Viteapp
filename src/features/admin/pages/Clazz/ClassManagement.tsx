@@ -1,8 +1,7 @@
-
-import { Button, Table, Tag } from 'antd';
+import { Button, Modal, Table, Tag } from 'antd';
 import ClassControlPanel from './components/ClassControlPanel'
 import { useLocation, useNavigate, useSearchParams  } from 'react-router-dom';
-import { fetchClazzes, type IClassSchedule, type IClazz } from '../../../../store/admin/classManagement';
+import { fetchClazzes, removeClazz, type IClassSchedule, type IClazz } from '../../../../store/admin/classManagement';
 import { useAppDispatch, useAppSelector } from '../../../../store/store';
 import type { ColumnProps } from 'antd/es/table';
 import { useEffect } from 'react';
@@ -16,21 +15,22 @@ import type { IRoomDto } from '../../../../store/admin/roomSlide';
 export const getClassStatusValue = (status: string) => {
   switch (status) {
     case "DRAFT":
-      return { value: "Draft", color: "#FF8C00" }; // Dark Orange
+      return { value: "Draft", color: "#FFA500" }; // Orange
     case "READY":
-      return { value: "Ready", color: "#228B22" }; // Forest Green
+      return { value: "Ready", color: "#32CD32" }; // Lime Green
     case "OPEN":
-      return { value: "Open", color: "#1E90FF" }; // Dodger Blue
+      return { value: "Open", color: "#007BFF" }; // Bright Blue
     case "ONGOING":
-      return { value: "Ongoing", color: "#FFD700" }; // Goldenrod (đậm hơn vàng tươi)
+      return { value: "Ongoing", color: "#FFC107" }; // Amber
     case "FINISHED":
-      return { value: "Finished", color: "#696969" }; // Dim Gray
+      return { value: "Finished", color: "#6C757D" }; // Slate Gray
     case "CANCELLED":
-      return { value: "Cancelled", color: "#B22222" }; // Firebrick
+      return { value: "Cancelled", color: "#DC3545" }; // Crimson Red
     default:
-      return { value: "Unknown", color: "#333333" }; // Dark Gray
+      return { value: "Unknown", color: "#495057" }; // Darker Gray
   }
 };
+
 
 
 const ClassManagement = () => {
@@ -45,6 +45,15 @@ const ClassManagement = () => {
   }, [searchParams]);
   const navigate = useNavigate();
   const location = useLocation();
+  const handleRemoveClass = async (clazz: IClazz) => {
+  Modal.confirm({
+    title: "Confirm Removal",
+    content: `Are you sure you want to remove the class "${clazz.name}"? This action cannot be undone.`,
+    onOk: async () => {
+      dispatch(removeClazz(clazz.id));
+    },
+  });
+};
   const columns : ColumnProps<IClazz>[] = [
      {
       title: "ID",
@@ -129,8 +138,9 @@ const ClassManagement = () => {
       key: "actions",
       width: 100,
       render: (_, record) => (
-        <div>
-          <Button type='primary'  onClick={() => navigate(`/admin/classes/details/${record.id}`, { state: { from: location.pathname + location.search } })}>Manager</Button>
+        <div className='flex'>
+          <Button type='link'  onClick={() => navigate(`/admin/classes/details/${record.id}`, { state: { from: location.pathname + location.search } })}>Manage</Button>
+          <Button type='link' danger onClick={() => handleRemoveClass(record)}>Remove</Button>
         </div>
       ),
     },

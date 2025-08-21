@@ -15,20 +15,20 @@ import { FaChalkboardTeacher, FaDoorOpen } from "react-icons/fa";
 import { setAssignRoomModal } from "../../../../store/admin/assignRoom";
 import { TbListDetails } from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
- const checkClassStatus = (date: string, start: string, end: string) => {
+const checkClassTimeStatus = (date: string, start: string, end: string) => {
   // date: "YYYY-MM-DD", start/end: "HH:mm"
   const now = dayjs();
 
-  // Kết hợp ngày + giờ, parse rõ ràng
+  // Combine date and time for precise comparison
   const classStart = dayjs(`${date}T${start}:00`); // ISO 8601
   const classEnd = dayjs(`${date}T${end}:00`);
 
   if (now.isBefore(classStart)) {
-    return "Upcoming"; // Sắp diễn ra
+    return "Future"; // Chưa diễn ra
   }
 
   if (now.isAfter(classEnd)) {
-    return "Completed"; // Đã kết thúc
+    return "Past"; // Đã qua
   }
 
   return "Ongoing"; // Đang diễn ra
@@ -136,8 +136,6 @@ const ClassSessions = () => {
   const isAllowAssign =
     clazz?.status !== "DRAFT" && clazz?.status !== "CANCELLED";
 
-
-
   useEffect(() => {
     if (
       clazz &&
@@ -192,7 +190,7 @@ const ClassSessions = () => {
       dataIndex: "conduct",
       key: "conduct",
       render: (conduct, record) => {
-        const status = checkClassStatus(
+        const timeStatus = checkClassTimeStatus(
           record.date,
           record.startTime,
           record.endTime
@@ -200,14 +198,14 @@ const ClassSessions = () => {
         return (
           <Tag
             color={
-              status === "Upcoming"
+              timeStatus === "Future"
                 ? "blue"
-                : status === "Ongoing"
-                ? "green"
-                : "red"
+                : timeStatus === "Past"
+                ? "red"
+                : "green"
             }
           >
-            {status}
+            {timeStatus}
           </Tag>
         );
       },
@@ -216,7 +214,17 @@ const ClassSessions = () => {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      render: (status) => <Tag>{status}</Tag>,
+      render: (status) => {
+        const colorMap: Record<string, string> = {
+          NOT_YET: "orange",
+          DONE: "purple",
+        };
+        return (
+          <Tag color={colorMap[status] || "default"}>
+            {status}
+          </Tag>
+        );
+      },
     },
     {
       title: "Actions",

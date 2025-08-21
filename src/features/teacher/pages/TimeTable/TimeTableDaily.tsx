@@ -11,20 +11,20 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import { getColorByName } from "../../../../utils/colorUtils";
-const checkClassStatus = (date: string, start: string, end: string) => {
+const checkClassTimeStatus = (date: string, start: string, end: string) => {
   // date: "YYYY-MM-DD", start/end: "HH:mm"
   const now = dayjs();
 
-  // Kết hợp ngày + giờ, parse rõ ràng
+  // Combine date and time for precise comparison
   const classStart = dayjs(`${date}T${start}:00`); // ISO 8601
   const classEnd = dayjs(`${date}T${end}:00`);
 
   if (now.isBefore(classStart)) {
-    return "Upcoming"; // Sắp diễn ra
+    return "Future"; // Chưa diễn ra
   }
 
   if (now.isAfter(classEnd)) {
-    return "Completed"; // Đã kết thúc
+    return "Past"; // Đã qua
   }
 
   return "Ongoing"; // Đang diễn ra
@@ -86,10 +86,11 @@ const TimeTableDaily = () => {
       ),
     },
     {
-      title: "Status",
-      dataIndex: "status",
-      render: (status, record: ISessionDto) => {
-        const classStatus = checkClassStatus(
+      title: "Conduct",
+      dataIndex: "conduct",
+      key: "conduct",
+      render: (_, record) => {
+        const timeStatus = checkClassTimeStatus(
           record.date,
           record.startTime,
           record.endTime
@@ -97,28 +98,61 @@ const TimeTableDaily = () => {
         return (
           <Tag
             color={
-              classStatus === "Upcoming"
+              timeStatus === "Future"
                 ? "blue"
-                : classStatus === "Ongoing"
-                ? "green"
-                : "red"
+                : timeStatus === "Past"
+                ? "red"
+                : "green"
             }
           >
-            {classStatus}
+            {timeStatus}
           </Tag>
+        );
+      },
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (status) => {
+        const colorMap: Record<string, string> = {
+          NOT_YET: "orange",
+          DONE: "purple",
+        };
+        return (
+          <Tag color={colorMap[status] || "default"}>{status}</Tag>
         );
       },
     },
     {
       title: "Actions",
       key: "actions",
-      render: (_, record: ISessionDto) => (
-        <div className="flex gap-2">
-          <button onClick={() => navigate(`/teacher/attendance/${record.id}`)} className="bg-teal-600 !text-white px-3 py-1 rounded hover:bg-teal-700 transition duration-200 cursor-pointer">
-            Attendance
-          </button>
-        </div>
-      ),
+      render: (_, record: ISessionDto) => {
+        if (record.status === "NOT_YET") {
+          return (
+            <div className="flex gap-2">
+              <button
+                onClick={() => navigate(`/teacher/attendance/${record.id}`)}
+                className="bg-teal-600 !text-white px-3 py-1 rounded hover:bg-teal-700 transition duration-200 cursor-pointer"
+              >
+                Teaching
+              </button>
+            </div>
+          );
+        } else if (record.status === "DONE") {
+          return (
+            <div className="flex gap-2">
+              <button
+                onClick={() => navigate(`/teacher/attendance/${record.id}`)}
+                className="bg-blue-600 !text-white px-3 py-1 rounded hover:bg-blue-700 transition duration-200 cursor-pointer"
+              >
+                Attendance
+              </button>
+            </div>
+          );
+        }
+        return null; // Hide button for other statuses
+      },
     },
   ];
 

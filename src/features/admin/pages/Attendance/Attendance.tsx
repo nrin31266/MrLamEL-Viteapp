@@ -10,14 +10,20 @@ import {
   Card,
   Divider,
   Spin,
+  Form,
+  Input,
+  Button,
 } from "antd";
 import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../../store/store";
 import {
   ATTENDANCE_STATUS,
   fetchAttendanceBySession,
+  learnSession,
   markAttendanceStatus,
 } from "../../../../store/admin/attendanceSlide";
+import { setClassSessions } from "../../../../store/admin/classSessions";
+import type { ISessionDto } from "../../../../store/teacher/timeTableForWeek";
 
 const Attendance = () => {
   const { sessionId } = useParams<{ sessionId: string }>();
@@ -56,10 +62,14 @@ const Attendance = () => {
 
   const columns = [
     {
-      title: "Student ID",
-      dataIndex: ["attendanceEnrollment", "attendee", "id"],
-      key: "id",
+      title: "Index",
+      render: (_: any, __: any, index: number) => index + 1,
     },
+    // {
+    //   title: "Student ID",
+    //   dataIndex: ["attendanceEnrollment", "attendee", "id"],
+    //   key: "id",
+    // },
     {
       title: "Name & Email",
       key: "nameEmail",
@@ -75,9 +85,9 @@ const Attendance = () => {
       },
       sorter: (a: any, b: any) => {
         const getLastName = (fullName?: string) => {
-          if (!fullName) return "";
-          const parts = fullName.trim().split(" ").filter(Boolean); // loại bỏ chuỗi rỗng
-          return parts.length > 0 ? parts[parts.length - 1].toLowerCase() : "";
+          if (!fullName) return "unknown"; // Default to "unknown" if name is missing
+          const parts = fullName.trim().split(" ").filter(Boolean); // Remove empty strings
+          return parts.length > 0 ? parts[parts.length - 1].toLowerCase() : "unknown";
         };
 
         const nameA = getLastName(a.attendanceEnrollment.attendee.fullName);
@@ -182,6 +192,28 @@ const Attendance = () => {
     },
   ];
 
+  const handleSubmitContent = (values: { title: string; content: string }) => {
+    console.log("Submitted Content:", values); // Placeholder for logic
+    if (attendance) {
+      dispatch(learnSession({ classSessionId: attendance.session.id, content: values.content })).unwrap().then(() => {
+        dispatch(fetchAttendanceBySession({ sessionId: attendance.session.id })); // Refresh attendance data
+        dispatch(setClassSessions((pre: ISessionDto[]) => pre.map(session => {
+          if (session.id === attendance.session.id) {
+            return {
+              ...session,
+              content: values.content,
+              status: "DONE" // Update status to DONE
+            };
+          }
+          return session;
+        })));
+      }).catch((error) => {
+        // Handle error
+        message.error("Failed to learn session content. With " + error.message);
+      });
+    }
+  };
+
   return (
     <div className="p-4 !space-y-6">
       {attendance && (
@@ -196,13 +228,22 @@ const Attendance = () => {
               <p className="text-lg">
                 <strong>Course:</strong> {attendance.clazz.course.name}
               </p>
-              <p className="text-lg">
-                <strong>Teacher:</strong> {attendance.session.teacher.fullName}
-              </p>
-              <p className="text-lg">
-                <strong>Room:</strong> {attendance.session.room.name} (
-                {attendance.session.room.branch.name})
-              </p>
+               <div className="text-lg flex gap-2">
+                <strong>Teacher:</strong>
+              {
+                attendance.session.teacher ? <p className="text-lg">
+                  {attendance.session.teacher.fullName}
+                </p> : <p>No teacher assigned</p>
+              }
+               </div>
+               <div className="text-lg flex gap-2">
+                <strong>Room:</strong> {
+                 attendance.session.room ? <p className="text-lg">
+                   {attendance.session.room.name} (
+                   {attendance.session.room.branch.name})
+                 </p> : <p>No room assigned</p>
+               }
+               </div>
             </div>
             <div>
               <p className="text-lg">
@@ -227,11 +268,49 @@ const Attendance = () => {
         </Card>
       )}
 
+      {attendance?.session.status === "NOT_YET" ? (
+        <Card className="shadow-md p-6 rounded-lg border border-gray-300">
+          <h2 className="text-2xl font-semibold mb-4">Enter Session Content</h2>
+          <Form
+            layout="horizontal"
+            onFinish={handleSubmitContent}
+            className="space-y-4"
+            name="sessionContentForm"
+            size="large"
+            requiredMark={false}
+          >
+            <Form.Item
+              label="Content"
+              name="content"
+              rules={[{ required: true, message: "Please enter content!" }]}
+            >
+              <Input.TextArea
+                rows={4}
+                placeholder="Enter session content"
+              />
+            </Form.Item>
+            <div className="flex justify-end">
+              <Button loading={loadings.learnSession} type="primary" htmlType="submit">
+                Learn
+              </Button>
+            </div>
+          </Form>
+        </Card>
+      ) : attendance?.session.status === "DONE" && (
+        <Card className="shadow-md p-6 rounded-lg border border-gray-300">
+          <h2 className="text-2xl font-semibold mb-4">Session Content</h2>
+          <Divider />
+          <p className="text-lg !mt-4">
+            {attendance.session.content || "No content available for this session."}
+          </p>
+        </Card>
+      )}
+
       {loadings.fetchAttendanceBySession ? (
         <Card className="shadow-md flex justify-center items-center h-64">
           <Spin size="large" />
         </Card>
-      ) : attendance ? (
+      ) : attendance && attendance.session.status === "DONE" ? (
         <>
           <Table
             dataSource={attendance.attendances}
@@ -283,7 +362,10 @@ const Attendance = () => {
         </>
       ) : (
         <Card className="shadow-md text-center text-gray-500">
-          No attendance data available.
+          {
+            !attendance ? <p>No attendance data available.</p> :
+            <p>Start the class to take attendance.</p>
+          }
         </Card>
       )}
     </div>
