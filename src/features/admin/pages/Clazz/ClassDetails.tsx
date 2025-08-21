@@ -4,17 +4,25 @@ import { useAppDispatch, useAppSelector } from "../../../../store/store";
 import { fetchClazz } from "../../../../store/admin/classDetails";
 import Loading from "../../../../components/common/Loading";
 import { Menu, type MenuProps } from "antd";
-import { getItem } from "../../components/AdminMenu/AdminMenu";
 import ClassHeaderDetails from "./components/ClassHeaderDetails";
-type MenuItem = Required<MenuProps>["items"][number];
 
 const ClassDetails = () => {
   const { classId } = useParams();
   const navigate = useNavigate();
-  const items: MenuItem[] = [
-    getItem("Overview", `/admin/classes/details/${classId}`),
-    getItem("Sessions", `/admin/classes/details/${classId}/sessions`),
-    getItem("Participants", `/admin/classes/details/${classId}/participants`),
+
+  const items: MenuProps["items"] = [
+    {
+      key: `/admin/classes/details/${classId}`,
+      label: "Overview",
+    },
+    {
+      key: `/admin/classes/details/${classId}/sessions`,
+      label: "Sessions",
+    },
+    {
+      key: `/admin/classes/details/${classId}/participants`,
+      label: "Participants",
+    },
   ];
 
   const loading = useAppSelector(
@@ -35,18 +43,18 @@ const ClassDetails = () => {
   if (!clazz || clazz.id !== Number(classId)) {
     return <div>No class found</div>;
   }
+
   const getSelectedKeys = () => {
     const path = location.pathname;
-    // console.log("Current path for selected keys:", path);
     if (path.startsWith("/admin/classes/details/")) {
-      if(path.startsWith(`/admin/classes/details/${classId}/sessions`)) {
+      if (path.startsWith(`/admin/classes/details/${classId}/sessions`)) {
         return [`/admin/classes/details/${classId}/sessions`];
       }
       return [path];
     }
     return [];
   };
-  
+
   const handleMenuClick: MenuProps["onClick"] = (e) => {
     if (e.key.startsWith("/admin/classes/details")) {
       navigate(e.key);
@@ -55,7 +63,7 @@ const ClassDetails = () => {
 
   return (
     <div className="grid gap-4 grid-cols-[16rem_1fr]">
-      <div className="bg-white p-4 rounded-md shadow-sm  h-max top-6 sticky  z-10 ">
+      <div className="bg-white p-4 rounded-md shadow-sm h-max top-6 sticky z-10">
         <div>
           <h1 className="text-xl font-semibold">Menu</h1>
           <Menu

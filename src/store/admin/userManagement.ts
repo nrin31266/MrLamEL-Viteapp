@@ -175,6 +175,7 @@ const userManagementSlice = createSlice({
       .addCase(fetchUsers.rejected, (state, action) => {
         state.loadings.fetch = false;
         state.errors.fetch = action.payload as string;
+        state.page = initialState.page; // Reset page on error
       })
       .addCase(createUser.pending, (state) => {
         state.loadings.create = true;

@@ -13,8 +13,11 @@ import {
 } from "antd";
 import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../../store/store";
-import { ATTENDANCE_STATUS, fetchAttendanceBySession, markAttendanceStatus } from "../../../../store/admin/attendanceSlide";
-
+import {
+  ATTENDANCE_STATUS,
+  fetchAttendanceBySession,
+  markAttendanceStatus,
+} from "../../../../store/admin/attendanceSlide";
 
 const Attendance = () => {
   const { sessionId } = useParams<{ sessionId: string }>();
@@ -56,7 +59,6 @@ const Attendance = () => {
       title: "Student ID",
       dataIndex: ["attendanceEnrollment", "attendee", "id"],
       key: "id",
-      
     },
     {
       title: "Name & Email",
@@ -64,7 +66,7 @@ const Attendance = () => {
       render: (_: any, record: any) => {
         const attendee = record.attendanceEnrollment.attendee;
         return (
-          <div >
+          <div>
             <span>{attendee.fullName}</span>
             <br />
             <span className="text-gray-500">({attendee.email})</span>
@@ -72,8 +74,16 @@ const Attendance = () => {
         );
       },
       sorter: (a: any, b: any) => {
-        const nameA = a.attendanceEnrollment.attendee.fullName.split(" ").pop();
-        const nameB = b.attendanceEnrollment.attendee.fullName.split(" ").pop();
+        const getLastName = (fullName?: string) => {
+          if (!fullName) return "";
+          const parts = fullName.trim().split(" ").filter(Boolean); // loại bỏ chuỗi rỗng
+          return parts.length > 0 ? parts[parts.length - 1].toLowerCase() : "";
+        };
+
+        const nameA = getLastName(a.attendanceEnrollment.attendee.fullName);
+        const nameB = getLastName(b.attendanceEnrollment.attendee.fullName);
+
+        console.log("Sorting:", { nameA, nameB });
         return nameA.localeCompare(nameB);
       },
     },
@@ -152,7 +162,6 @@ const Attendance = () => {
                 <DownOutlined />
               </a>
             </Dropdown>
-           
           </div>
         );
       },
@@ -175,8 +184,6 @@ const Attendance = () => {
 
   return (
     <div className="p-4 !space-y-6">
-     
-
       {attendance && (
         <Card className="shadow-md p-6 rounded-lg border border-gray-300">
           <h2 className="text-2xl font-semibold mb-2">Session Information</h2>
@@ -225,62 +232,60 @@ const Attendance = () => {
           <Spin size="large" />
         </Card>
       ) : attendance ? (
-       <>
-        <Table
-          dataSource={attendance.attendances}
-          columns={columns}
-          rowKey="id"
-          pagination={false}
-          className="rounded-lg overflow-x-auto border border-gray-200"
-          rowClassName={(record, index) =>
-            index % 2 === 0 ? "bg-gray-100" : "bg-white"
-          } // Alternating row colors
-        />
-         <Card className="shadow-md mt-4">
-        <h2 className="text-2xl font-semibold mb-2">Attendance Summary</h2>
-        <Divider />
-        <div className="!space-y-2 mt-4">
-          {Object.keys(ATTENDANCE_STATUS).map((status) => {
-            const colorMap: Record<string, string> = {
-              PRESENT: "green",
-              ABSENT: "red",
-              LATE: "orange",
-              EXCUSED: "blue",
-              NOT_JOINED_YET: "gray",
-            };
-            const count =
-              attendance?.attendances?.filter(
-                (attendee) => attendee.status === status
-              ).length || 0;
-            return (
-              <div key={status} className="flex items-center gap-4">
-                <span
-                  style={{
-                    width: "10px",
-                    height: "10px",
-                    borderRadius: "50%",
-                    backgroundColor: colorMap[status],
-                  }}
-                ></span>
-                <span>{getStatusLabel(status)}:</span>
-                <Tag color={colorMap[status]}>{count}</Tag>
-              </div>
-            );
-          })}
-        </div>
-        <div className="mt-4">
-          <strong>Total Students:</strong>{" "}
-          {attendance?.attendances?.length || 0}
-        </div>
-      </Card>
-       </>
+        <>
+          <Table
+            dataSource={attendance.attendances}
+            columns={columns}
+            rowKey="id"
+            pagination={false}
+            className="rounded-lg overflow-x-auto border border-gray-200"
+            rowClassName={(record, index) =>
+              index % 2 === 0 ? "bg-gray-100" : "bg-white"
+            } // Alternating row colors
+          />
+          <Card className="shadow-md mt-4">
+            <h2 className="text-2xl font-semibold mb-2">Attendance Summary</h2>
+            <Divider />
+            <div className="!space-y-2 mt-4">
+              {Object.keys(ATTENDANCE_STATUS).map((status) => {
+                const colorMap: Record<string, string> = {
+                  PRESENT: "green",
+                  ABSENT: "red",
+                  LATE: "orange",
+                  EXCUSED: "blue",
+                  NOT_JOINED_YET: "gray",
+                };
+                const count =
+                  attendance?.attendances?.filter(
+                    (attendee) => attendee.status === status
+                  ).length || 0;
+                return (
+                  <div key={status} className="flex items-center gap-4">
+                    <span
+                      style={{
+                        width: "10px",
+                        height: "10px",
+                        borderRadius: "50%",
+                        backgroundColor: colorMap[status],
+                      }}
+                    ></span>
+                    <span>{getStatusLabel(status)}:</span>
+                    <Tag color={colorMap[status]}>{count}</Tag>
+                  </div>
+                );
+              })}
+            </div>
+            <div className="mt-4">
+              <strong>Total Students:</strong>{" "}
+              {attendance?.attendances?.length || 0}
+            </div>
+          </Card>
+        </>
       ) : (
         <Card className="shadow-md text-center text-gray-500">
           No attendance data available.
         </Card>
       )}
-
-     
     </div>
   );
 };

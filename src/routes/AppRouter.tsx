@@ -30,6 +30,7 @@ import TeacherProfile from "../features/teacher/pages/Profile/TeacherProfile";
 import TimeTableWeekly from "../features/teacher/pages/TimeTable/TimeTableWeekly";
 import TimeTable from "../features/teacher/pages/TimeTable/TimeTable";
 import Attendance from "../features/teacher/pages/Attendance/Attendance";
+import AdminAttendance from "../features/admin/pages/Attendance/Attendance";
 
 const AppRouter = () => {
   return (
@@ -70,7 +71,7 @@ const AppRouter = () => {
           </Route>
         </Route>
 
-       <Route element={<AuthGuard allowedRoles={["ADMIN"]} />}>
+       <Route element={<AuthGuard allowedRoles={["ADMIN", "SENIOR_ADMIN"]} />}>
             <Route path="/admin" element={<AdminLayout />} >
               <Route index element={<AdminDashboard />} />
               <Route path="branches" element={<BranchList />} />
@@ -93,7 +94,7 @@ const AppRouter = () => {
                 <Route index element={<ClassOverview/>} />
                 <Route path="sessions" element={<ClassSessions />} />
                 <Route path="participants" element={<ClassEnrollment />} />
-                <Route path="sessions/:sessionId/attendance" element={<Attendance />} />
+                <Route path="sessions/:sessionId/attendance" element={<AdminAttendance />} />
               </Route>
               <Route path="tools" element={<Tools />} />
               <Route path="teachers" element={<div>Manage Teachers</div>} />

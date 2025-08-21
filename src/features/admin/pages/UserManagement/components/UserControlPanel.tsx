@@ -2,6 +2,7 @@ import { Button, Divider, Input, Select } from "antd";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaAddressBook, FaPlus, FaSortAlphaDown } from "react-icons/fa";
+import { getRole } from "../UserManagement";
 interface Props {
   // Define any props if needed
   searchParams: URLSearchParams;
@@ -42,29 +43,10 @@ const UserControlPanel: React.FC<Props> = ({
   }, [searchTerm]);
   return (
     <div className="bg-white p-4 rounded-lg shadow-md mb-6 flex justify-start items-center gap-4">
-      <Select
-        size="large"
-        labelRender={(value) => (
-          <>
-            <span className="font-semibold">Role: </span>
-            <span className="text-gray-500">{value.label}</span>
-          </>
-        )}
-        disabled
-        placeholder="Select a branch"
-        value={role}
-        style={{ width: 150 }}
-        onChange={(value: string) => {
-          navigate(
-            `/admin/users/${value}` +
-              (searchParams.toString() ? `?${searchParams.toString()}` : "")
-          );
-        }}
-      >
-        <Select.Option value="students">Student</Select.Option>
-        <Select.Option value="teachers">Teacher</Select.Option>
-        {/* <Select.Option value="admin">Admin</Select.Option> */}
-      </Select>
+     <div className="flex gap-1">
+      <span>Role </span>
+      <span className="font-semibold">{getRole(role)?.label}</span>
+     </div>
         <Divider type="vertical"  />
       <Select
         size="large"

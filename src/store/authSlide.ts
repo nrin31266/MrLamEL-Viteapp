@@ -19,6 +19,12 @@ export interface IUser {
   completedProfile: boolean;
   gender: "MALE" | "FEMALE" | "OTHER";
   profileComplete?: boolean;
+  permissions?: IPermission[];
+}
+
+export interface IPermission{
+  name: string;
+  description: string;
 }
 
 export interface LoginPayload {
@@ -27,6 +33,9 @@ export interface LoginPayload {
   deviceId: string;
   deviceName: string;
 }
+export const isPermissionContained = (userPermissions: IPermission[], requiredPermission: string): boolean => {
+  return userPermissions.some(permission => permission.name === requiredPermission);
+};
 
 export const fetchMyInfo = createAsyncThunk(
   "auth/fetchMyInfo",

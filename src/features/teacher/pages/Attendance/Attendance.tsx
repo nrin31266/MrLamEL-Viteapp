@@ -75,8 +75,23 @@ const Attendance = () => {
         );
       },
       sorter: (a: any, b: any) => {
-        const nameA = a.attendanceEnrollment.attendee.fullName.split(" ").pop();
-        const nameB = b.attendanceEnrollment.attendee.fullName.split(" ").pop();
+        const getLastName = (fullName?: string) => {
+          if (!fullName) return "";
+          const parts = fullName.trim().split(" ").filter(Boolean); // loại bỏ chuỗi rỗng
+//           .filter(Boolean) là một trick trong JavaScript/TypeScript để loại bỏ các giá trị “falsy” trong mảng, bao gồm:
+// "" (chuỗi rỗng)
+// null
+// undefined
+// 0
+// false
+// NaN
+          return parts.length > 0 ? parts[parts.length - 1].toLowerCase() : "";
+        };
+
+        const nameA = getLastName(a.attendanceEnrollment.attendee.fullName);
+        const nameB = getLastName(b.attendanceEnrollment.attendee.fullName);
+
+        console.log("Sorting:", { nameA, nameB });
         return nameA.localeCompare(nameB);
       },
     },
