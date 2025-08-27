@@ -63,21 +63,23 @@ const ClassDetails = () => {
 
   return (
     <div className="grid gap-4 grid-cols-[16rem_1fr]">
-      <div className="bg-white p-4 rounded-md shadow-sm h-max top-6 sticky z-10">
+      <div className="bg-white rounded-md shadow-sm h-max top-6 sticky z-10">
         <div>
-          <h1 className="text-xl font-semibold">Menu</h1>
+          <div className="bg-sky-950 rounded-t-md">
+            <h1 className="text-xl py-2 text-white font-semibold text-center">Menu</h1>
+          </div>
           <Menu
             selectedKeys={getSelectedKeys()}
             mode="inline"
             items={items}
             onClick={handleMenuClick}
-            className="border border-gray-200 rounded-md"
+            className="border-gray-200"
             style={{ width: "100%" }}
           />
         </div>
       </div>
-      <div className="grid grid-rows-[auto_1fr] gap-4">
-        <ClassHeaderDetails />
+      <div className="grid grid-rows-[1fr] gap-4">
+        
         <Outlet />
       </div>
     </div>

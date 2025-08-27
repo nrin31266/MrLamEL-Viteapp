@@ -8,7 +8,8 @@ import { ConfigProvider } from "antd";
 
 function App() {
   return (
-   <ConfigProvider >
+   <ConfigProvider theme={{
+   }}>
     <Provider store={store}>
        <AppRouter />
     </Provider>

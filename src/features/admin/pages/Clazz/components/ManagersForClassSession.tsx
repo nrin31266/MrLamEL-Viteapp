@@ -3,20 +3,17 @@ import type { IClazz } from "../../../../../store/admin/classManagement";
 import {
   Button,
   Input,
-  Tag,
   Modal,
   Form,
   Empty,
   message,
   type InputRef,
 } from "antd";
-import { CloseCircleOutlined } from "@ant-design/icons";
 import { useAppDispatch, useAppSelector } from "../../../../../store/store";
 import {
   empowerClassForTeacher,
   revokeEmpowermentFromClass,
 } from "../../../../../store/admin/classPowerSlide";
-import enrollStudentToClassSlice from "./../../../../../store/admin/enrollStudentToClass";
 import { setClazz } from "../../../../../store/admin/classDetails";
 
 interface Props {
@@ -75,10 +72,15 @@ const ManagersForClassSession = ({ clazz }: Props) => {
   return (
     <div className="rounded-xl shadow bg-white">
       {/* Header */}
-      <div className="bg-gray-200 p-4 rounded-t-xl flex items-center justify-between">
-        <h1 className="text-xl text-gray-800 font-bold">
-          Teacher authorization
+      <div className="bg-sky-950 px-4 py-2 rounded-t-xl flex items-center justify-between">
+        <div>
+          <h1 className="text-xl text-white font-bold">
+          Teachers have the right to manage the class
         </h1>
+        <p className="text-sm text-gray-300">
+          This is the person who has the authority to take attendance and assign homework to the class.
+        </p>
+        </div>
         <div>
           <Button
             type={adding ? "default" : "primary"}

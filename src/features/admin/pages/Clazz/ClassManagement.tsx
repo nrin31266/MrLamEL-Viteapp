@@ -1,14 +1,19 @@
-import { Button, Modal, Table, Tag } from 'antd';
-import ClassControlPanel from './components/ClassControlPanel'
-import { useLocation, useNavigate, useSearchParams  } from 'react-router-dom';
-import { fetchClazzes, removeClazz, type IClassSchedule, type IClazz } from '../../../../store/admin/classManagement';
-import { useAppDispatch, useAppSelector } from '../../../../store/store';
-import type { ColumnProps } from 'antd/es/table';
-import { useEffect } from 'react';
+import { Button, Modal, Table, Tag } from "antd";
+import ClassControlPanel from "./components/ClassControlPanel";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import {
+  fetchClazzes,
+  removeClazz,
+  type IClassSchedule,
+  type IClazz,
+} from "../../../../store/admin/classManagement";
+import { useAppDispatch, useAppSelector } from "../../../../store/store";
+import type { ColumnProps } from "antd/es/table";
+import { useEffect } from "react";
 import { SiTask } from "react-icons/si";
-import { CurrencyUtils } from '../../../../utils/CurrencyUtils';
-import type { ICourseDto } from '../../../../store/admin/courseSlide';
-import type { IRoomDto } from '../../../../store/admin/roomSlide';
+import { CurrencyUtils } from "../../../../utils/CurrencyUtils";
+import type { ICourseDto } from "../../../../store/admin/courseSlide";
+import type { IRoomDto } from "../../../../store/admin/roomSlide";
 
 // Trả về giá trị, label, mã màu hex cho đẹp
 // "DRAFT" | "READY" | "OPEN" | "ONGOING" | "FINISHED" | "CANCELLED"
@@ -31,13 +36,13 @@ export const getClassStatusValue = (status: string) => {
   }
 };
 
-
-
 const ClassManagement = () => {
-    // You can manage searchParams and setSearchParams here if needed
-    const [searchParams, setSearchParams] = useSearchParams();
-  const page= useAppSelector((state) => state.admin.classManagement.page);
-  const loading = useAppSelector((state) => state.admin.classManagement.loadings.fetch);
+  // You can manage searchParams and setSearchParams here if needed
+  const [searchParams, setSearchParams] = useSearchParams();
+  const page = useAppSelector((state) => state.admin.classManagement.page);
+  const loading = useAppSelector(
+    (state) => state.admin.classManagement.loadings.fetch
+  );
   const dispatch = useAppDispatch();
   useEffect(() => {
     // Fetch classes data when the component mounts or searchParams change
@@ -46,16 +51,16 @@ const ClassManagement = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const handleRemoveClass = async (clazz: IClazz) => {
-  Modal.confirm({
-    title: "Confirm Removal",
-    content: `Are you sure you want to remove the class "${clazz.name}"? This action cannot be undone.`,
-    onOk: async () => {
-      dispatch(removeClazz(clazz.id));
-    },
-  });
-};
-  const columns : ColumnProps<IClazz>[] = [
-     {
+    Modal.confirm({
+      title: "Confirm Removal",
+      content: `Are you sure you want to remove the class "${clazz.name}"? This action cannot be undone.`,
+      onOk: async () => {
+        dispatch(removeClazz(clazz.id));
+      },
+    });
+  };
+  const columns: ColumnProps<IClazz>[] = [
+    {
       title: "ID",
       dataIndex: "id",
       key: "id",
@@ -65,7 +70,14 @@ const ClassManagement = () => {
       title: "Avatar",
       dataIndex: "avatarUrl",
       key: "avatarUrl",
-      render: (avatarUrl: string) => <img src={avatarUrl} alt="Avatar" style={{ width: 40, height: 40, borderRadius: '50%' }} />,
+      render: (avatarUrl: string) => (
+        <img
+          src={avatarUrl}
+          alt="Avatar"
+          className="border border-gray-300 object-cover"
+          style={{ width: 52, height: 52 }}
+        />
+      ),
     },
     {
       title: "Name",
@@ -79,12 +91,11 @@ const ClassManagement = () => {
       key: "course",
       render: (course: ICourseDto) => (
         <div>
-          <span className="font-semibold">{course.code}</span> 
+          <span className="font-semibold">{course.code}</span>
           <br />
           <span>{course.name}</span>
-          <br/>
+          <br />
           <span>{CurrencyUtils.formatVND(course.fee)}</span>
-
         </div>
       ),
     },
@@ -96,9 +107,10 @@ const ClassManagement = () => {
         <div>
           {schedules.map((schedule) => (
             <div key={schedule.id}>
-              <span className="font-semibold">{schedule.dayOfWeek}</span>
-              {" "}
-              <span>{schedule.startTime}-{schedule.endTime}</span>
+              <span className="font-semibold">{schedule.dayOfWeek}</span>{" "}
+              <span>
+                {schedule.startTime}-{schedule.endTime}
+              </span>
             </div>
           ))}
         </div>
@@ -107,22 +119,34 @@ const ClassManagement = () => {
     {
       dataIndex: "",
       title: "Time",
-      render: (_, record) => <div>
-        <p>Start: {record.startDate}</p>
-        <p>End: {record.endDate}</p>
-      </div>
+      render: (_, record) => (
+        <div>
+          <p>
+            Start:{" "}
+            {record.startDate || <span className="text-gray-500">N/A</span>}
+          </p>
+          <p>
+            End: {record.endDate || <span className="text-gray-500">N/A</span>}
+          </p>
+        </div>
+      ),
     },
     {
       dataIndex: "totalSessions",
       key: "totalSessions",
       title: "Total Sessions",
-      render: (totalSessions: number) => (<Tag>{totalSessions}</Tag>)
+      width: 60,
+      render: (totalSessions: number) => (
+        <span className="text-lg font-semibold">{totalSessions}</span>
+      ),
     },
     {
       dataIndex: "maxSeats",
       key: "maxSeats",
-      title: "Max Seats",
-      render: (maxSeats: number) => (<Tag>{maxSeats}</Tag>)
+      title: "Max",
+      render: (maxSeats: number) => (
+        <span className="text-lg font-semibold">{maxSeats}</span>
+      ),
     },
     {
       title: "Status",
@@ -130,7 +154,14 @@ const ClassManagement = () => {
       key: "status",
       render: (status) => {
         const { value, color } = getClassStatusValue(status);
-        return <Tag className={`status-${status.toLowerCase()} !text-[0.85rem]`}  color={color}>{value}</Tag>;
+        return (
+          <Tag
+            className={`status-${status.toLowerCase()} !text-[0.85rem] w-20 !py-1 !text-center`}
+            color={color}
+          >
+            {value}
+          </Tag>
+        );
       },
     },
     {
@@ -138,21 +169,42 @@ const ClassManagement = () => {
       key: "actions",
       width: 100,
       render: (_, record) => (
-        <div className='flex'>
-          <Button type='link'  onClick={() => navigate(`/admin/classes/details/${record.id}`, { state: { from: location.pathname + location.search } })}>Manage</Button>
-          <Button type='link' danger onClick={() => handleRemoveClass(record)}>Remove</Button>
+        <div className="flex flex-col gap-2">
+          <Button
+            type="primary"
+            size="small"
+            onClick={() =>
+              navigate(`/admin/classes/details/${record.id}`, {
+                state: { from: location.pathname + location.search },
+              })
+            }
+          >
+            Manage
+          </Button>
+          <Button
+            type="default"
+            danger
+            size="small"
+            onClick={() => handleRemoveClass(record)}
+          >
+            Remove
+          </Button>
         </div>
       ),
     },
   ];
   return (
     <div>
-        <ClassControlPanel searchParams={searchParams} setSearchParams={setSearchParams} />
-        <div className='bg-white p-4 rounded-lg shadow-md mb-6'>
-           <Table<IClazz>
+      <ClassControlPanel
+        searchParams={searchParams}
+        setSearchParams={setSearchParams}
+      />
+      <div className="bg-white p-4 rounded-lg shadow-md mb-6">
+        <Table<IClazz>
           columns={columns}
           dataSource={page.content}
           loading={loading}
+          
           className="ant-table-striped"
           rowClassName={(_, index) =>
             index % 2 === 0 ? "bg-gray-100" : "bg-white"
@@ -179,9 +231,8 @@ const ClassManagement = () => {
           // }}
         />
       </div>
-        
     </div>
-  )
-}
+  );
+};
 
-export default ClassManagement
+export default ClassManagement;

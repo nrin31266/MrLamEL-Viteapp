@@ -116,17 +116,17 @@ const ClassEnrollment = () => {
   return (
     <div>
       <div className="bg-white rounded-lg shadow-md h-full flex flex-col gap-4">
-        <div className="bg-gray-200 p-4 rounded-t-lg">
+        <div className="bg-sky-950 p-4 rounded-t-lg">
           <div className="flex justify-between items-center">
-            <h2 className="text-xl font-bold !mb-0">Class Enrollment</h2>
+            <h2 className="text-xl font-bold  text-white">Class Enrollment</h2>
             <div>
-              <p>Total: {enrollments.length} / {clazz?.maxSeats}</p>
+              <p className="text-white">Total: {enrollments.length} / {clazz?.maxSeats}</p>
             </div>
           </div>
           <div>
             <Button
               icon={<FaUserPlus />}
-              type="default"
+              type="primary"
               onClick={() => setOpenClassEnrollmentModal(true)}
               disabled={!allowEnroll}
             >

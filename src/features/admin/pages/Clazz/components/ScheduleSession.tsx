@@ -1,12 +1,9 @@
-import { Button, message, Modal } from 'antd'
-import React from 'react'
-import type { IClassSchedule, IClazz } from '../../../../../store/admin/classManagement';
-import FormScheduleModal from './FormScheduleModal';
-import { useAppDispatch } from '../../../../../store/store';
+import { Button, message, Modal } from 'antd';
+import React from 'react';
 import { deleteClassSchedule } from '../../../../../store/admin/classDetails';
-import { setAssignTeacherModal } from '../../../../../store/admin/assignTeacher';
-import { setAssignRoomModal } from "../../../../../store/admin/assignRoom";
-import { FaChalkboardTeacher, FaDoorOpen } from "react-icons/fa";
+import type { IClassSchedule, IClazz } from '../../../../../store/admin/classManagement';
+import { useAppDispatch } from '../../../../../store/store';
+import FormScheduleModal from './FormScheduleModal';
 interface ScheduleSessionProps {
   clazz: IClazz; // Replace 'any' with the actual type of clazz
 }
@@ -32,12 +29,12 @@ const ScheduleSession: React.FC<ScheduleSessionProps> = ({ clazz }) => {
       });
     };
   return (
-    <div>
-         <div className='bg-white  rounded-lg shadow-md mt-4'>
-         <div className='flex justify-between items-center bg-gray-200 rounded-t-lg p-4'>
-          <h1 className='text-xl font-bold '>Schedules</h1>
+    <div className='col-span-8'>
+         <div className='bg-white  rounded-lg shadow-md'>
+         <div className='flex justify-between items-center bg-sky-950 rounded-t-lg px-4 py-2'>
+          <h2 className='text-xl font-bold text-white'>Schedules</h2>
           <div>
-            <Button type="primary" disabled={!isAllowCreate} hidden={!isAllowCreate} onClick={() => {
+            <Button hidden={!isAllowCreate} type='primary' className=''  disabled={!isAllowCreate} onClick={() => {
               setIsModalOpen(true);
               setSelectedSchedule(undefined);
             }}>Add Schedule</Button>
@@ -47,7 +44,7 @@ const ScheduleSession: React.FC<ScheduleSessionProps> = ({ clazz }) => {
           clazz.schedules.length > 0 ? (
             <div className='p-4 space-y-4'>
               {clazz.schedules.map((schedule, index) => (
-                <div key={index} className='border-b border-gray-200'>
+                <div key={index} className='not-last:border-b border-gray-200'>
                   <div className='flex justify-between items-center py-2'>
                     <div>
                       <p className='font-semibold'>{`Schedule ${index + 1}`}</p>

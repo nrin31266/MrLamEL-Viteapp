@@ -93,6 +93,7 @@ const AdminMenu: React.FC<AdminMenuProps> = ({ collapsed, onCollapse }) => {
   const getSelectedKeys = () => {
     const path = location.pathname;
     if (path.startsWith("/admin")) {
+      if(path.startsWith("/admin/classes")) return ["/admin/classes"];
       return [path];
     }
     return [];

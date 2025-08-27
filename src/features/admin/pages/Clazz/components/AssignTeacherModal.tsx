@@ -61,8 +61,8 @@ const AssignTeacherModal = () => {
       assignTeacher({
         mode,
         ...(mode === "by-clazz" && { clazzId: String(targetId), teacherId: String(selectedTeacher.id) }),
-        ...(mode === "by-schedule" && { scheduleId: String(targetId), teacherId: String(selectedTeacher.id) }),
-        ...(mode === "by-session" && { sessionId: String(targetId), teacherId: String(selectedTeacher.id) }),
+        ...(mode === "by-schedule" && {clazzId: String(targetId),  scheduleId: String(targetId), teacherId: String(selectedTeacher.id) }),
+        ...(mode === "by-session" && {clazzId: String(targetId),  sessionId: String(targetId), teacherId: String(selectedTeacher.id) }),
       })
     ).unwrap().then(() => {
       switch (mode) {

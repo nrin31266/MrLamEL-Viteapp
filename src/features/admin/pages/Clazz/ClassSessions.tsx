@@ -15,6 +15,8 @@ import { FaChalkboardTeacher, FaDoorOpen } from "react-icons/fa";
 import { setAssignRoomModal } from "../../../../store/admin/assignRoom";
 import { TbListDetails } from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
+import AssignTeacherModal from "./components/AssignTeacherModal";
+import AssignRoomModal from "./components/AssignRoomModal";
 const checkClassTimeStatus = (date: string, start: string, end: string) => {
   // date: "YYYY-MM-DD", start/end: "HH:mm"
   const now = dayjs();
@@ -283,11 +285,11 @@ const ClassSessions = () => {
   ];
   return (
     <div className=" bg-white rounded-lg shadow-md h-full">
-      <div className="p-4 bg-gray-200 rounded-t-lg">
+      <div className="p-4 bg-sky-950 rounded-t-lg">
         <div className="flex justify-between items-center">
-          <h1 className="text-xl font-semibold ">Class Sessions</h1>
+          <h1 className="text-xl font-semibold text-white">Class Sessions</h1>
           <div>
-            <p>
+            <p className="text-white">
               Total: {sessions.length} / {clazz?.totalSessions}
             </p>
           </div>
@@ -301,7 +303,7 @@ const ClassSessions = () => {
             <Button
               icon={<FaChalkboardTeacher />}
               disabled={!isAllowAssign}
-              type="default"
+              type="primary"
               onClick={(e) => e.preventDefault()}
             >
               Assign Teacher
@@ -315,7 +317,7 @@ const ClassSessions = () => {
             <Button
               icon={<FaDoorOpen />}
               disabled={!isAllowAssign}
-              type="default"
+              type="primary"
               onClick={(e) => e.preventDefault()}
             >
               Assign Room
@@ -334,6 +336,9 @@ const ClassSessions = () => {
           loading={isLoading}
         />
       )}
+
+      <AssignTeacherModal />
+      <AssignRoomModal />
     </div>
   );
 };

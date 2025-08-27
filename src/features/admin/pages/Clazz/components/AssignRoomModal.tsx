@@ -137,7 +137,7 @@ const AssignRoomModal = () => {
                 <div className="!space-y-4">
                   {availableRooms.map((room) => (
                     <Radio className="w-full border border-gray-200 rounded-md !p-4" key={room.id} value={room.id}>
-                      <div className="grid gap-4 grid-cols-[auto_1fr_auto] ">
+                      <div className=" gap-4 flex ">
                         <span>Id: {room.id}</span>
                         <span className="font-semibold">Name: {room.name}</span>
                         <span className="text-gray-500">Capacity: {room.capacity}</span>

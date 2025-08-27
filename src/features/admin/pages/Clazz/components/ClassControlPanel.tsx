@@ -1,4 +1,4 @@
-import { Button } from 'antd';
+import { Button, Divider } from 'antd';
 import React from 'react'
 import { useNavigate } from 'react-router-dom';
 interface Props {
@@ -22,8 +22,15 @@ const ClassControlPanel = ({ searchParams, setSearchParams }: Props) => {
     });
   };
   return (
-    <div className='bg-white p-4 rounded-lg shadow-md mb-6 flex justify-start items-center gap-4'>
-        <Button onClick={() => navigate('/admin/classes/create')} type="primary">Add Class</Button>
+    <div className='bg-white p-4 shadow-md mb-6 flex justify-between items-center gap-4'>
+      <div>
+        <h1 className='text-xl font-bold text-gray-800'>Class Management</h1>
+      </div>
+        <div className='flex items-center gap-4'>
+          <Divider variant='solid' type='vertical'/>
+          <h2 className='text-lg font-semibold'>Tools</h2>
+          <Button onClick={() => navigate('/admin/classes/create')} type="primary">Add Class</Button>
+        </div>
     </div>
   )
 }
