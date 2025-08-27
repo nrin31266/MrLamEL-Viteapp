@@ -49,3 +49,23 @@ a.disabled {
 .ant-divider-horizontal {
   margin: 0 !important;
 }
+/* ví dụ trong global.css */
+.fc-customToday-button,
+.fc-customPrev-button,
+.fc-customNext-button {
+  font-size: 14px !important;  /* chỉnh độ to chữ */
+  padding: 6px 12px; /* chỉnh padding */
+  border-radius: 8px;
+}
+
+.fc-customToday-button {
+  background-color: #2563eb; /* xanh */
+  color: white;
+  font-weight: 600;
+}
+
+.fc-customPrev-button,
+.fc-customNext-button {
+  background-color: #e5e7eb; /* gray-200 */
+  color: #111827;
+}

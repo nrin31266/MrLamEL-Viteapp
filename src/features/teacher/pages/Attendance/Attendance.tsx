@@ -21,7 +21,7 @@ import {
   fetchAttendanceBySession,
   learnSession,
   markAttendanceStatus,
-} from "../../../../store/teacher/AttendanceSlide";
+} from "../../../../store/teacher/attendanceSlide";
 
 const Attendance = () => {
   const { sessionId } = useParams<{ sessionId: string }>();
@@ -206,60 +206,79 @@ const Attendance = () => {
   ];
 
   return (
-    <div className="p-4 !space-y-6">
+    <div className="!space-y-6">
       {attendance && (
-        <Card className="shadow-md p-6 rounded-lg border border-gray-300">
-          <h2 className="text-2xl font-semibold mb-2">Session Information</h2>
-          <Divider />
-          <div className="grid grid-cols-2 gap-6 mt-4">
-            <div>
-              <p className="text-lg">
-                <strong>Id: </strong> {attendance.session.id}
-              </p>
-              <p className="text-lg">
+        <div className="shadow-md rounded-lg border border-gray-300">
+          <div className="bg-sky-950 px-4 py-2 rounded-t-lg">
+            <h2 className="text-xl font-semibold mb-2 text-white">
+              Session Information
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4 mt-4 p-4">
+            <div className="flex flex-col gap-2">
+              <span className="text-lg">
                 <strong>Class:</strong> {attendance.clazz.name}
-              </p>
-              <p className="text-lg">
+              </span>
+              <span className="text-lg">
                 <strong>Course:</strong> {attendance.clazz.course.name}
-              </p>
-              <p className="text-lg">
-                <strong>Teacher:</strong> {attendance.session.teacher.fullName}
-              </p>
-              <p className="text-lg">
-                <strong>Room:</strong> {attendance.session.room.name} (
-                {attendance.session.room.branch.name})
-              </p>
+              </span>
+              <div className="text-lg flex gap-2">
+                <strong>Teacher:</strong>
+                {attendance.session.teacher ? (
+                  <span className="text-lg">
+                    {attendance.session.teacher.fullName}
+                  </span>
+                ) : (
+                  <span>No teacher assigned</span>
+                )}
+              </div>
+              <div className="text-lg flex gap-2">
+                <strong>Room:</strong>{" "}
+                {attendance.session.room ? (
+                  <span className="text-lg">
+                    {attendance.session.room.name} (
+                    {attendance.session.room.branch.name})
+                  </span>
+                ) : (
+                  <span>No room assigned</span>
+                )}
+              </div>
             </div>
-            <div>
-              <p className="text-lg">
+            <div className="flex flex-col gap-2">
+              <span className="text-lg">
                 <strong>Date:</strong> {attendance.session.date}
-              </p>
-              <p className="text-lg">
+              </span>
+              <span className="text-lg">
                 <strong>Time:</strong> {attendance.session.startTime} -{" "}
                 {attendance.session.endTime}
-              </p>
-              <p className="text-lg">
+              </span>
+              <span className="text-lg">
                 <strong>Status:</strong>{" "}
                 <Tag color="gold" className="text-lg">
                   {attendance.session.status}
                 </Tag>
-              </p>
-              <p className="text-lg">
+              </span>
+              <span className="text-lg">
                 <strong>Note:</strong>{" "}
                 {attendance.session.note || "No notes available"}
-              </p>
+              </span>
             </div>
           </div>
-        </Card>
+        </div>
       )}
 
-      {attendance?.session.status === "NOT_YET" && (
-        <Card className="shadow-md p-6 rounded-lg border border-gray-300">
-          <h2 className="text-2xl font-semibold mb-4">Enter Session Content</h2>
+      {attendance?.session.status === "NOT_YET" ? (
+        <div className="shadow-md rounded-lg border border-gray-300">
+          <div className="bg-slate-950 px-4 py-2 rounded-t-lg">
+            <h2 className="text-xl font-semibold mb-4 text-white">
+              Enter Session Content
+            </h2>
+          </div>
           <Form
             layout="horizontal"
             onFinish={handleSubmitContent}
-            className="space-y-4"
+            className="!space-y-2 !p-4"
             name="sessionContentForm"
             size="large"
             requiredMark={false}
@@ -269,7 +288,7 @@ const Attendance = () => {
               name="content"
               rules={[{ required: true, message: "Please enter content!" }]}
             >
-              <Input.TextArea rows={4} placeholder="Enter session content" />
+              <Input placeholder="Enter session content" />
             </Form.Item>
             <div className="flex justify-end">
               <Button
@@ -281,73 +300,87 @@ const Attendance = () => {
               </Button>
             </div>
           </Form>
-        </Card>
-      )}
+        </div>
+      ) : (
+        attendance?.session.status === "DONE" && (
+          <div className="shadow-md rounded-lg border border-gray-300">
+            <div className="bg-stone-950 px-4 py-2 rounded-t-lg">
+              <h2 className="text-xl font-semibold mb-4 text-white">
+                Session Content
+              </h2>
+            </div>
 
-      {attendance?.session.status === "DONE" && (
-        <Card className="shadow-md p-6 rounded-lg border border-gray-300">
-          <h2 className="text-2xl font-semibold mb-4">Session Content</h2>
-          <Divider />
-          <p className="text-lg !mt-4">
-            {attendance.session.content ||
-              "No content available for this session."}
-          </p>
-        </Card>
+            <p className="text-lg !mt-4 px-4">
+              {attendance.session.content ||
+                "No content available for this session."}
+            </p>
+          </div>
+        )
       )}
 
       {loadings.fetchAttendanceBySession ? (
-        <Card className="shadow-md flex justify-center items-center h-64">
+        <div className="shadow-md flex justify-center items-center h-64">
           <Spin size="large" />
-        </Card>
+        </div>
       ) : attendance && attendance.session.status === "DONE" ? (
         <>
-          <Table
-            dataSource={attendance.attendances}
-            columns={columns}
-            rowKey="id"
-            pagination={false}
-            className="rounded-lg overflow-x-auto border border-gray-200"
-            rowClassName={(record, index) =>
-              index % 2 === 0 ? "bg-gray-100" : "bg-white"
-            } // Alternating row colors
-          />
-          <Card className="shadow-md mt-4">
-            <h2 className="text-2xl font-semibold mb-2">Attendance Summary</h2>
-            <Divider />
-            <div className="!space-y-2 mt-4">
-              {Object.keys(ATTENDANCE_STATUS).map((status) => {
-                const colorMap: Record<string, string> = {
-                  PRESENT: "green",
-                  ABSENT: "red",
-                  LATE: "orange",
-                  EXCUSED: "blue",
-                  NOT_JOINED_YET: "gray",
-                };
-                const count =
-                  attendance?.attendances?.filter(
-                    (attendee) => attendee.status === status
-                  ).length || 0;
-                return (
-                  <div key={status} className="flex items-center gap-4">
-                    <span
-                      style={{
-                        width: "10px",
-                        height: "10px",
-                        borderRadius: "50%",
-                        backgroundColor: colorMap[status],
-                      }}
-                    ></span>
-                    <span>{getStatusLabel(status)}:</span>
-                    <Tag color={colorMap[status]}>{count}</Tag>
-                  </div>
-                );
-              })}
+          <div className=" border border-gray-200 rounded-lg">
+            <div className="bg-sky-950 px-4 py-2 rounded-t-lg">
+              <h2 className="text-xl font-semibold mb-4 text-white">
+                Attendance List
+              </h2>
             </div>
-            <div className="mt-4">
-              <strong>Total Students:</strong>{" "}
-              {attendance?.attendances?.length || 0}
+            <Table
+              dataSource={attendance.attendances}
+              columns={columns}
+              rowKey="id"
+              pagination={false}
+              className=" overflow-x-auto"
+              rowClassName={(record, index) =>
+                index % 2 === 0 ? "bg-gray-100" : "bg-white"
+              } // Alternating row colors
+            />
+            <div className="p-4  w-max mt-2 rounded-bl-lg  bg-sky-100">
+              <h1 className="text-xl font-bold">Summary</h1>
+              <div className="">
+                <span className="font-semibold text-gray-800">
+                  Total Students:
+                </span>{" "}
+                <span className="font-bold text-xl">
+                  {attendance?.attendances?.length || 0}
+                </span>
+              </div>
+              <div className=" mt-4 grid gap-2 md:grid-cols-2 grid-cols-1">
+                {Object.keys(ATTENDANCE_STATUS).map((status) => {
+                  const colorMap: Record<string, string> = {
+                    PRESENT: "green",
+                    ABSENT: "red",
+                    LATE: "orange",
+                    EXCUSED: "blue",
+                    NOT_JOINED_YET: "gray",
+                  };
+                  const count =
+                    attendance?.attendances?.filter(
+                      (attendee) => attendee.status === status
+                    ).length || 0;
+                  return (
+                    <div key={status} className="flex items-center gap-4">
+                      <span
+                        style={{
+                          width: "10px",
+                          height: "10px",
+                          borderRadius: "50%",
+                          backgroundColor: colorMap[status],
+                        }}
+                      ></span>
+                      <span>{getStatusLabel(status)}:</span>
+                      <Tag color={colorMap[status]}>{count}</Tag>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
-          </Card>
+          </div>
         </>
       ) : (
         <Card className="shadow-md text-center text-gray-500">

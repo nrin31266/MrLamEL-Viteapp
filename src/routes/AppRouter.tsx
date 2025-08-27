@@ -8,7 +8,6 @@ import UpdateProfile from "../features/auth/pages/UpdateProfile/UpdateProfile";
 import ResetPassword from "../features/auth/pages/ResetPassword/ResetPassword";
 import AdminLayout from "../features/admin/layout/AdminLayout";
 import AdminDashboard from "../features/admin/pages/AdminDashboard/Dashboard";
-import AdminContent from "../features/admin/components/AdminContent/AdminContent";
 import BranchList from "../features/admin/pages/Branch/BranchList";
 import BranchForm from "../features/admin/pages/Branch/BranchForm";
 import RoomList from "../features/admin/pages/Room/RoomList";
@@ -31,6 +30,10 @@ import TimeTableWeekly from "../features/teacher/pages/TimeTable/TimeTableWeekly
 import TimeTable from "../features/teacher/pages/TimeTable/TimeTable";
 import Attendance from "../features/teacher/pages/Attendance/Attendance";
 import AdminAttendance from "../features/admin/pages/Attendance/Attendance";
+import StudentLayout from "../features/student/layout/StudentLayout";
+import StudentTimeTableWeekly from "../features/student/pages/TimeTable/TimeTableWeekly";
+import StudentTimeTable from "../features/student/pages/TimeTable/TimeTable";
+import StudentProfile from "../features/student/pages/Profile/StudentProfile";
 
 const AppRouter = () => {
   return (
@@ -118,7 +121,11 @@ const AppRouter = () => {
         </Route>
         {/* Route chỉ dành cho Student */}
         <Route element={<AuthGuard allowedRoles={["STUDENT"]} />}>
-          <Route path="/student/*" element={<div>Student Layout</div>} />
+          <Route path="/student" element={<StudentLayout />} >
+            <Route path="timetable" element={<StudentTimeTable />} />
+            <Route path="timetable/weekly" element={<StudentTimeTableWeekly />} />
+            <Route path="profile" element={<StudentProfile />} />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>

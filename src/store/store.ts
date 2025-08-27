@@ -7,13 +7,15 @@ import authSlide from './authSlide';
 import adminReducer from './admin';
 import commonReducer from './common';
 import teacherReducer from './teacher';
+import studentReducer from './student';
 
 
 const rootReducer = combineReducers({
   auth: authSlide,
   admin: adminReducer,
   common: commonReducer,
-  teacher: teacherReducer
+  teacher: teacherReducer,
+  student: studentReducer
 });
 
 

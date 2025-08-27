@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "../../../../store/store";
 import { useSearchParams } from "react-router-dom";
-import { fetchTimeTableForWeek } from "../../../../store/teacher/timeTableForWeek";
+import { fetchTimeTableForStudentWeekly } from "../../../../store/student/timeTableForWeek";
 import { Spin, Tooltip } from "antd";
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -14,19 +14,19 @@ import LoadingOverlay from "../../../../components/common/LoadingOverlay";
 const TimeTableWeekly = () => {
   const dispatch = useAppDispatch();
   const { loading, sessions, weekEndDate, weekStartDate, weekNumber } =
-    useAppSelector((state) => state.teacher.timeTableForWeek);
+    useAppSelector((state) => state.student.timeTableForWeek);
   const [searchParams, setSearchParams] = useSearchParams();
-  const teacher = useAppSelector((state) => state.auth.user);
+  const Student = useAppSelector((state) => state.auth.user);
 
   const calendarRef = useRef<FullCalendar | null>(null);
 
   useEffect(() => {
-    if (!teacher) return;
+    if (!Student) return;
     let weekNumber: number = Number(searchParams.get("weekNumber"));
     if (!weekNumber || isNaN(weekNumber)) {
       weekNumber = 0;
     }
-    dispatch(fetchTimeTableForWeek({ teacherId: teacher.id, weekNumber }));
+    dispatch(fetchTimeTableForStudentWeekly({ studentId: Student.id, weekNumber }));
   }, [searchParams]);
 
   // Move gotoDate outside React's rendering lifecycle

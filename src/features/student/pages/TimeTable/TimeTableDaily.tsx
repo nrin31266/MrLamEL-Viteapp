@@ -3,8 +3,8 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../../store/store";
-import { fetchTimeTableForTeacherByDay } from "../../../../store/teacher/timeTableForDay";
-import type { ISessionDto } from "../../../../store/teacher/timeTableForWeek";
+import { fetchTimeTableForStudentByDay } from "../../../../store/student/timeTableForDay";
+import type { ISessionDto } from "../../../../store/student/timeTableForWeek";
 import type { ColumnProps, ColumnsType } from "antd/es/table";
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -29,6 +29,7 @@ const checkClassTimeStatus = (date: string, start: string, end: string) => {
 
   return "Ongoing"; // Đang diễn ra
 };
+
 const getClassSessionStatus = (status: string) => {
   const statusMap: Record<string, string> = {
     NOT_YET: "Not Yet",
@@ -36,22 +37,23 @@ const getClassSessionStatus = (status: string) => {
   };
   return statusMap[status] || "Unknown";
 };
+
 const TimeTableDaily = () => {
   const { sessions, loading, error } = useAppSelector(
-    (state) => state.teacher.timeTableForDay
+    (state) => state.student.timeTableForDay
   );
   const dispatch = useAppDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
   const [mode, setMode] = useState<"details" | "grid-view">("details");
-  const teacher = useAppSelector((state) => state.auth.user);
+  const Student = useAppSelector((state) => state.auth.user);
   const navigate = useNavigate();
   useEffect(() => {
-    if (!teacher) return;
+    if (!Student) return;
     const fetchData = async () => {
       const date = searchParams.get("date") || dayjs().format("YYYY-MM-DD");
       dispatch(
-        fetchTimeTableForTeacherByDay({
-          teacherId: teacher.id,
+        fetchTimeTableForStudentByDay({
+          studentId: Student.id,
           date: date.toString(),
         })
       );
@@ -136,32 +138,14 @@ const TimeTableDaily = () => {
     {
       title: "Actions",
       key: "actions",
-      render: (_, record: ISessionDto) => {
-        if (record.status === "NOT_YET") {
-          return (
-            <div className="flex gap-2">
-              <button
-                onClick={() => navigate(`/teacher/attendance/${record.id}`)}
+      render: (_, record: ISessionDto) => <div>
+        <button
+                onClick={() => navigate(`/student/view-schedule/${record.clazz.id}`)}
                 className="bg-teal-600 !text-white px-3 py-1 rounded hover:bg-teal-700 transition duration-200 cursor-pointer"
               >
-                Teaching
+                View schedule
               </button>
-            </div>
-          );
-        } else if (record.status === "DONE") {
-          return (
-            <div className="flex gap-2">
-              <button
-                onClick={() => navigate(`/teacher/attendance/${record.id}`)}
-                className="bg-blue-600 !text-white px-3 py-1 rounded hover:bg-blue-700 transition duration-200 cursor-pointer"
-              >
-                Attendance
-              </button>
-            </div>
-          );
-        }
-        return null; // Hide button for other statuses
-      },
+      </div>
     },
   ];
 
