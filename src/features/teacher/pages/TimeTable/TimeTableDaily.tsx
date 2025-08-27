@@ -11,7 +11,7 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import { getColorByName } from "../../../../utils/colorUtils";
-const checkClassTimeStatus = (date: string, start: string, end: string) => {
+export const checkClassTimeStatus = (date: string, start: string, end: string) => {
   // date: "YYYY-MM-DD", start/end: "HH:mm"
   const now = dayjs();
 
@@ -29,7 +29,7 @@ const checkClassTimeStatus = (date: string, start: string, end: string) => {
 
   return "Ongoing"; // Đang diễn ra
 };
-const getClassSessionStatus = (status: string) => {
+export const getClassSessionStatus = (status: string) => {
   const statusMap: Record<string, string> = {
     NOT_YET: "Not Yet",
     DONE: "Done",
