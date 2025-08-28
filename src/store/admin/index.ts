@@ -14,6 +14,7 @@ import classSessionsSlide from "./classSessions";
 import classPowerSlide from "./classPowerSlide";
 import attendanceSlide from "./attendanceSlide";
 import todaySessionsSlide from "./todaySessionsSlide";
+import missedSessionsSlide from "./missedSessionsSlide";
 const adminReducer = combineReducers({
   dashboard: dashboardSlide,
   branch: branchSlide,
@@ -29,7 +30,8 @@ const adminReducer = combineReducers({
   classSessions: classSessionsSlide,
   classPower: classPowerSlide,
   attendance: attendanceSlide,
-  todaySessions: todaySessionsSlide
+  todaySessions: todaySessionsSlide,
+  missedSessions: missedSessionsSlide
 });
 
 export default adminReducer;

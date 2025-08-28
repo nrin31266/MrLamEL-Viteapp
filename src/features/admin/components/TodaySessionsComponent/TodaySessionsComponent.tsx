@@ -78,16 +78,16 @@ const TodaySessionsComponent = () => {
     },
 
     {
-      title: "Room",
-      dataIndex: "room",
-      className: "min-w-[200px]",
-      render: (room: ISessionDto["room"]) => (
-        <div>
-          <h4>{room.name}</h4>
-          <h4>{room.branch.address}</h4>
-        </div>
-      ),
-    },
+         title: "Room",
+         dataIndex: "room",
+         className: "min-w-[200px]",
+         render: (room: ISessionDto["room"]) => (
+           <div>
+            <h4>{room?.name || "Unknown Room"}</h4>
+          <h4>{room?.branch?.address || "Unknown Branch"}</h4>
+           </div>
+         ),
+       },
     {
       title: "Conduct",
       dataIndex: "conduct",
@@ -231,6 +231,9 @@ const TodaySessionsComponent = () => {
                 columns={columns}
                 dataSource={filteredSessions || []}
                 pagination={false}
+                 scroll={{
+                  y: 400,
+                }}
                 rowKey="id"
                 className="rounded-b-lg overflow-x-auto"
                 locale={{

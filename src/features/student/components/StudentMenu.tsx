@@ -19,17 +19,17 @@ const StudentMenu = ({ collapsed, onCollapse, isLarge }: StudentMenuProps) => {
       icon: <FaCalendarAlt />,
       children: [
         {
-          key: "/Student/timetable",
+          key: "/student/timetable",
           label: "General",
         },
         {
-          key: "/Student/timetable/weekly",
+          key: "/student/timetable/weekly",
           label: "Weekly",
         },
       ],
     },
     {
-      key: "/Student/profile",
+      key: "/student/profile",
       label: "Profile",
       icon: <CgProfile />,
     },
@@ -39,7 +39,7 @@ const StudentMenu = ({ collapsed, onCollapse, isLarge }: StudentMenuProps) => {
   };
   const getSelectedKeys = () => {
     const path = location.pathname;
-    if (path.startsWith("/Student")) {
+    if (path.startsWith("/student")) {
       return [path];
     }
     return [];
