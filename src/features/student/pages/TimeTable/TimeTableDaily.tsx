@@ -152,10 +152,7 @@ const TimeTableDaily = () => {
   return (
     <div className="bg-white shadow rounded-md px-2 py-4">
       <h1 className="text-lg font-semibold">Time Table Daily</h1>
-      {loading ? (
-        <Skeleton.Node active={true} className="!w-full !h-[30vh]" />
-      ) : (
-        <div>
+       <div>
           <div className="flex gap-4 items-center mb-4">
             <button
               className={`cursor-pointer py-2 px-4 rounded transition duration-300 transform hover:scale-105 
@@ -188,6 +185,7 @@ const TimeTableDaily = () => {
                 pagination={false}
                 rowKey="id"
                 className="rounded-lg overflow-x-auto border border-gray-200"
+                loading={loading}
                 locale={{
                   emptyText: (
                     <Empty
@@ -294,7 +292,6 @@ const TimeTableDaily = () => {
             </div>
           )}
         </div>
-      )}
     </div>
   );
 };

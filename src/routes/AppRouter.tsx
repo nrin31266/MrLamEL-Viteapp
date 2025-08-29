@@ -36,9 +36,11 @@ import StudentTimeTable from "../features/student/pages/TimeTable/TimeTable";
 import StudentProfile from "../features/student/pages/Profile/StudentProfile";
 import ClassProgress from "../features/student/pages/ClassProgress/ClassProgress";
 
+
 const AppRouter = () => {
   return (
     <BrowserRouter>
+     
       <Routes>
         {/* Public routes - không cần đăng nhập */}
         <Route path="/unauthorized" element={<div>Unauthorized Page</div>} />

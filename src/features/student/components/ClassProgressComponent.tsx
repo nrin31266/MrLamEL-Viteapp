@@ -137,7 +137,7 @@ const ClassProgressComponent = ({ classId }: Props) => {
               <Table
                 columns={columns}
                 dataSource={state.classProgress.learnedSessions}
-                rowKey="id"
+                rowKey={(record) => record.session.id}
                 pagination={false}
                 bordered
                 loading={state.loading.fetchClassProgress}

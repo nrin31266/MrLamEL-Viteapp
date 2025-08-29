@@ -20,6 +20,7 @@ const ClassStudying = () => {
       title: "#",
       render: (_, __, index) => index + 1,
     },
+    
     {
       title: "Class Name",
       dataIndex: "name",
@@ -73,9 +74,6 @@ const ClassStudying = () => {
         </p>
       </div>
       <div className="px-2 py-2">
-        {state.loading.fetchClassesStudying ? (
-          <Skeleton.Node active={true} className="!w-full !h-[30vh]" />
-        ) : (
           <>
             <Table
               columns={columns}
@@ -93,7 +91,6 @@ const ClassStudying = () => {
                 }}
             />
           </>
-        )}
       </div>
     </div>
   );
