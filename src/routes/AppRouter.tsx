@@ -34,6 +34,7 @@ import StudentLayout from "../features/student/layout/StudentLayout";
 import StudentTimeTableWeekly from "../features/student/pages/TimeTable/TimeTableWeekly";
 import StudentTimeTable from "../features/student/pages/TimeTable/TimeTable";
 import StudentProfile from "../features/student/pages/Profile/StudentProfile";
+import ClassProgress from "../features/student/pages/ClassProgress/ClassProgress";
 
 const AppRouter = () => {
   return (
@@ -125,6 +126,7 @@ const AppRouter = () => {
             <Route path="timetable" element={<StudentTimeTable />} />
             <Route path="timetable/weekly" element={<StudentTimeTableWeekly />} />
             <Route path="profile" element={<StudentProfile />} />
+            <Route path="class-progress/:classId" element={<ClassProgress />} />
           </Route>
         </Route>
       </Routes>

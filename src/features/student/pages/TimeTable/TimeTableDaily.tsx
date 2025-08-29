@@ -62,7 +62,7 @@ const TimeTableDaily = () => {
   }, [searchParams]);
   const columns: ColumnsType<ISessionDto> = [
     {
-      title: "Index",
+      title: "#",
       render: (_, __, index) => index + 1,
     },
     {
@@ -192,7 +192,7 @@ const TimeTableDaily = () => {
                   emptyText: (
                     <Empty
                       image={Empty.PRESENTED_IMAGE_DEFAULT}
-                      description="Today you have no classes"
+                      description="Today you have no sessions"
                     />
                   ),
                 }}

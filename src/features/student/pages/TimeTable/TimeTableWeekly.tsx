@@ -65,7 +65,7 @@ const TimeTableWeekly = () => {
           ")"}
       </h1>
       <div
-        style={{ overflowX: "auto", minWidth: "1400px", maxWidth: "100%" }}
+        style={{ overflowX: "auto", minWidth: "900px", maxWidth: "100%" }}
         className="bg-white"
       >
         <FullCalendar

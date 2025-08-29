@@ -8,6 +8,7 @@ import adminReducer from './admin';
 import commonReducer from './common';
 import teacherReducer from './teacher';
 import studentReducer from './student';
+import ClassProgress from './classProgress';
 
 
 const rootReducer = combineReducers({
@@ -15,7 +16,8 @@ const rootReducer = combineReducers({
   admin: adminReducer,
   common: commonReducer,
   teacher: teacherReducer,
-  student: studentReducer
+  student: studentReducer,
+  classProgress: ClassProgress
 });
 
 
