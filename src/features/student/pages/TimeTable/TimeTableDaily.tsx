@@ -11,6 +11,7 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import { getColorByName } from "../../../../utils/colorUtils";
+import type { IUser } from "../../../../store/authSlide";
 const checkClassTimeStatus = (date: string, start: string, end: string) => {
   // date: "YYYY-MM-DD", start/end: "HH:mm"
   const now = dayjs();
@@ -84,7 +85,16 @@ const TimeTableDaily = () => {
       render: (clazz) => <span className="text-gray-800">{clazz.name}</span>,
       className: "min-w-[200px]",
     },
-
+    {
+      title: "Teacher",
+      dataIndex: "teacher",
+      render: (teacher:IUser) => 
+        teacher ? <div>
+          <span className="text-gray-800">{teacher.fullName}</span><br />
+          <span className="text-gray-600 italic">{teacher.email}</span>
+        </div> : <span className="text-gray-800">Unknown</span>,
+      className: "min-w-[200px]",
+    },
     {
       title: "Room",
       dataIndex: "room",
@@ -140,10 +150,10 @@ const TimeTableDaily = () => {
       key: "actions",
       render: (_, record: ISessionDto) => <div>
         <button
-                onClick={() => navigate(`/student/view-schedule/${record.clazz.id}`)}
+                onClick={() => navigate(`/student/class-progress/${record.clazz.id}`)}
                 className="bg-teal-600 !text-white px-3 py-1 rounded hover:bg-teal-700 transition duration-200 cursor-pointer"
               >
-                View schedule
+                Study progress
               </button>
       </div>
     },
