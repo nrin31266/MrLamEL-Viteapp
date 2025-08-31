@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import StudentMenu from '../components/StudentMenu';
 import StudentHeader from '../components/StudentHeader';
 import { Outlet } from 'react-router-dom';
+import ChatWithAI from '../../ai/ChatWithAI';
 
 const StudentLayout = () => {
   const [collapsed, setCollapsed] = useState(window.innerWidth < 768 ? true : false);
@@ -38,6 +39,7 @@ const StudentLayout = () => {
         <main className="flex-1 overflow-auto">
           <div className='px-1 py-4'>
             <Outlet/>
+            
           </div>
           
           {/* Footer */}
@@ -45,7 +47,9 @@ const StudentLayout = () => {
             Student Panel ©2024 Created by MrLamEL
           </footer>
         </main>
+        <ChatWithAI/>
       </div>
+      
     </div>
   )
 }

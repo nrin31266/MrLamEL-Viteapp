@@ -4,7 +4,7 @@ import { refreshTokenThunk } from "../store/authSlide";
 
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
-  timeout: 20000,
+  // Set timeout hight because call api for ai very much time, can 3 minute
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",

@@ -9,7 +9,8 @@ import commonReducer from './common';
 import teacherReducer from './teacher';
 import studentReducer from './student';
 import ClassProgress from './classProgress';
-
+import aiSlide from './aiSlide';
+import chatAISlice from './chatAISlide';
 
 const rootReducer = combineReducers({
   auth: authSlide,
@@ -17,7 +18,9 @@ const rootReducer = combineReducers({
   common: commonReducer,
   teacher: teacherReducer,
   student: studentReducer,
-  classProgress: ClassProgress
+  classProgress: ClassProgress,
+  ai: aiSlide,
+  chatAI: chatAISlice,
 });
 
 

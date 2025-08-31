@@ -123,7 +123,7 @@ const TimeTableWeekly = () => {
                     </h4>
                   </div>
                   <div className="text-[11px] mt-0.5 bg-white/20 px-1 py-0.5 rounded">
-                    Room: {session?.room?.code || "?"}
+                    {session?.room?.code || "?"}
                   </div>
                 </div>
               </Tooltip>

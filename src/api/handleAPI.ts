@@ -9,6 +9,7 @@ interface RequestParams<B = unknown> {
   isAuth?: boolean;
   params?: Record<string, any>;
   withCredentials?: boolean;
+  timeout?: number; // thêm tùy chọn timeout
 }
 
 interface IApiResponse<T> {
@@ -23,7 +24,8 @@ const handleAPI = async <T, B = unknown>({
   method = "get",
   isAuth = false,
   params,
-  withCredentials = false
+  withCredentials = false,
+  timeout
 }: RequestParams<B>): Promise<T> => {
   try {
     const headers: Record<string, string> = {};
@@ -41,7 +43,8 @@ const handleAPI = async <T, B = unknown>({
       data: body,
       headers,
       params,
-      withCredentials
+      withCredentials,
+      timeout: timeout || 10000
     });
 
     const apiResponse: IApiResponse<T> = axiosResponse.data;
