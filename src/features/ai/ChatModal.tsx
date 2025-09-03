@@ -3,9 +3,9 @@ import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ChatWithAIBody from "./ChatWithAIBody";
 import { useAppDispatch, useAppSelector } from "../../store/store";
-import { askAI } from "../../store/aiSlide";
-import { addMessage } from "../../store/chatAISlide";
-
+import { addMessage, updateLastAIMessage } from "../../store/chatAISlide";
+import { useAIStream } from "./useAIStream";
+import dayjs from "dayjs";
 interface ChatModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -13,37 +13,135 @@ interface ChatModalProps {
 
 const ChatModal: React.FC<ChatModalProps> = ({ isOpen, onClose }) => {
   const [message, setMessage] = useState("");
+  const [messageCounter, setMessageCounter] = useState(0);
   const messageInputRef = useRef<HTMLTextAreaElement>(null);
   const aiState = useAppSelector(state => state.ai);
+  const [autoScroll, setAutoScroll] = useState(true);
+  const chatAIState = useAppSelector(state => state.chatAI);
   const dispatch = useAppDispatch();
+  
+  const { 
+    data: streamingData, 
+    thinking, 
+    isLoading: isStreamLoading, 
+    isThinking, 
+    isStreaming, 
+    error: streamError, 
+    askQuestion: askStreamQuestion, 
+    reset: resetStream 
+  } = useAIStream();
+
+  const token = localStorage.getItem("accessToken") || "";
+
+  // Refs để theo dõi trạng thái trước đó
+  const prevStreamingData = useRef<string>('');
+  const prevThinking = useRef<string>('');
+  const prevStreamError = useRef<string | null>(null);
+
   useEffect(() => {
     if (isOpen && messageInputRef.current) {
       messageInputRef.current.focus();
     }
   }, [isOpen]);
-  
+
+  // useEffect cho streamingData - FIXED
+  useEffect(() => {
+    if (streamingData && streamingData !== prevStreamingData.current && chatAIState.messages.length > 0) {
+      const lastMessage = chatAIState.messages[chatAIState.messages.length - 1];
+      if (lastMessage.sender === "ai") {
+        dispatch(updateLastAIMessage(streamingData));
+      }
+      prevStreamingData.current = streamingData;
+    }
+  }, [streamingData, dispatch, chatAIState.messages]);
+
+  // useEffect cho thinking - FIXED
+  // useEffect(() => {
+  //   if (thinking && thinking !== prevThinking.current && chatAIState.messages.length > 0) {
+  //     const lastMessage = chatAIState.messages[chatAIState.messages.length - 1];
+  //     if (lastMessage.sender === "ai") {
+  //       dispatch(updateLastAIMessage(`<div class="thinking-process">${thinking}</div>`));
+  //     }
+  //     prevThinking.current = thinking;
+  //   }
+  // }, [thinking, dispatch, chatAIState.messages]);
+
+  // useEffect cho streamError - FIXED
+  useEffect(() => {
+    if (streamError && streamError !== prevStreamError.current && chatAIState.messages.length > 0) {
+      const lastMessage = chatAIState.messages[chatAIState.messages.length - 1];
+      if (lastMessage.sender === "ai") {
+        dispatch(updateLastAIMessage(`Error: ${streamError}`));
+      }
+      prevStreamError.current = streamError;
+    }
+  }, [streamError, dispatch, chatAIState.messages]);
+
   const defaultHeight = 44;
+
   const handleSendMessage = async () => {
     if (!message.trim()) return;
-    console.log("Message sent:", message);
-    dispatch(addMessage({ message: message.trim(), sender: "user", timestamp: new Date().toISOString() }));
-    dispatch(askAI({ question: message })).unwrap().then(
-        (response) => {
-          dispatch(addMessage({ message: response.answer, sender: "ai", timestamp: new Date().toISOString() }));
-        }
-    ).catch(
-        (error) => {
-            dispatch(addMessage({ message: `Error: ${error}`, sender: "ai", timestamp: new Date().toISOString() }));
-        }
-    );
     setMessage("");
+    // Tạo unique timestamp với counter để tránh trùng lặp
+    const timestamp = new Date().toISOString();
+    const uniqueTimestamp = `${timestamp}-${messageCounter}`;
+
+    // Thêm message user
+    dispatch(addMessage({ 
+      message: message.trim(), 
+      sender: "user", 
+      timestamp: timestamp,
+      key: uniqueTimestamp
+    }));
+
+    // Tăng counter
+    setMessageCounter(prev => prev + 1);
+
+    // Thêm message AI placeholder với unique timestamp
+    const aiTimestamp = new Date().toISOString();
+    const uniqueAiTimestamp = `${aiTimestamp}-${messageCounter}`;
+    
+    dispatch(addMessage({ 
+      message: "Thinking...", 
+      sender: "ai", 
+      timestamp: aiTimestamp,
+      key: uniqueAiTimestamp
+    }));
+
+    // Tăng counter tiếp
+    setMessageCounter(prev => prev + 1);
+
+    // Reset các refs trước khi gọi API mới
+    prevStreamingData.current = '';
+    prevThinking.current = '';
+    prevStreamError.current = null;
+    setAutoScroll(true);
+
+    // Gọi streaming API
+    try {
+      await askStreamQuestion(message, token);
+    } catch (error) {
+      dispatch(updateLastAIMessage(`Error: ${error}`));
+    }
+
+    
 
     if (messageInputRef.current) {
-      messageInputRef.current.style.height = defaultHeight + "px"; // reset height after sending
-      messageInputRef.current.style.overflowY = "hidden"; // reset hide scroll
+      messageInputRef.current.style.height = defaultHeight + "px";
+      messageInputRef.current.style.overflowY = "hidden";
       messageInputRef.current.focus();
     }
   };
+
+  const handleClose = () => {
+    resetStream();
+    // Reset các refs khi đóng modal
+    prevStreamingData.current = '';
+    prevThinking.current = '';
+    prevStreamError.current = null;
+    onClose();
+  };
+
   return (
     <div
       className={`fixed z-20 bottom-20 h-[80%] right-10 bg-white rounded-lg shadow-lg transition-transform transform ${
@@ -51,21 +149,27 @@ const ChatModal: React.FC<ChatModalProps> = ({ isOpen, onClose }) => {
           ? "translate-y-0 opacity-100 pointer-events-auto"
           : "translate-y-10 opacity-0 pointer-events-none"
       }`}
-      style={{ width: "500px" }}
+      style={{ width: "800px" }}
     >
       <div className="p-4 grid grid-rows-[auto_1fr_auto] h-full">
         <div className="flex justify-between border-gray-300 items-center">
           <button
             className="absolute border rounded-full  w-6 h-6 flex items-center justify-center cursor-pointer
             top-4 right-4 border-gray-100 bg-gray-100 hover:bg-gray-200  transform duration-150  hover:ease-in-out"
-            onClick={onClose}
+            onClick={handleClose}
           >
             ✕
           </button>
           <h2 className="text-lg font-bold text-blue-600">Chat with AI</h2>
         </div>
 
-        <ChatWithAIBody/>
+        <ChatWithAIBody 
+          isThinking={isThinking} 
+          thinkingContent={thinking}
+          isStreaming={isStreaming}
+          autoScroll={autoScroll}
+          setAutoScroll={setAutoScroll}
+        />
 
         <div className="py-2 border-gray-300">
           <div className="relative flex items-center justify-center">
@@ -96,13 +200,16 @@ const ChatModal: React.FC<ChatModalProps> = ({ isOpen, onClose }) => {
               style={{
                 fontSize: "1rem",
                 height: defaultHeight + "px",
-                overflowY: "hidden", // ẩn scroll mặc định
+                overflowY: "hidden",
               }}
               placeholder="Type your message..."
               rows={1}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               onKeyDown={(e) => {
+                if(isStreamLoading || isThinking || isStreaming) {
+                  return;
+                }
                 if (e.key === "Enter" && !e.shiftKey) {
                   e.preventDefault();
                   handleSendMessage();
@@ -110,10 +217,7 @@ const ChatModal: React.FC<ChatModalProps> = ({ isOpen, onClose }) => {
               }}
               onInput={(e) => {
                 const target = e.target as HTMLTextAreaElement;
-
-                // Reset chiều cao để tính scrollHeight chính xác
                 target.style.height = "auto";
-
                 const scrollHeight =
                   target.scrollHeight < defaultHeight
                     ? defaultHeight
@@ -122,21 +226,23 @@ const ChatModal: React.FC<ChatModalProps> = ({ isOpen, onClose }) => {
 
                 if (scrollHeight > maxHeight) {
                   target.style.height = `${maxHeight}px`;
-                  target.style.overflowY = "auto"; // hiện scroll
+                  target.style.overflowY = "auto";
                 } else {
                   target.style.height = `${scrollHeight}px`;
-                  target.style.overflowY = "hidden"; // ẩn scroll
+                  target.style.overflowY = "hidden";
                 }
               }}
+              // disabled={isStreamLoading || isThinking || isStreaming}
             />
             <div className="absolute top-1/2 right-3 pb-1 transform -translate-y-[50%] flex flex-col-reverse h-full">
               <button
                 onClick={handleSendMessage}
                 className={`text-gray-500 p-2 transform duration-300 rounded-full ${
-                  (message.trim() && !aiState.loading.askLoading)
+                  (message.trim() && !isStreamLoading && !isThinking && !isStreaming)
                     ? "cursor-pointer ease-in !text-white bg-[var(--primary-color)] hover:bg-[var(--primary-color-dark)]"
                     : "cursor-not-allowed bg-gray-200"
                 }`}
+                disabled={isStreamLoading || isThinking || isStreaming}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

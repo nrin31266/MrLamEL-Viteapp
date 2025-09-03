@@ -11,15 +11,15 @@ const ChatWithAIMessage = ({ message }: Props) => {
   const isAI = message.sender === "ai";
 
   return (
-    <div className={`flex ${isAI ? 'justify-start' : 'justify-end'} items-end`}>
+    <div className={`flex w-full ${isAI ? 'justify-start' : 'justify-end'} items-end`}>
       {isAI && (
         <div className="mr-2">
           <AiFillRobot className="text-gray-500 text-2xl" />
         </div>
       )}
       <div
-        className={`max-w-xs p-3 ${
-          isAI ? 'bg-gray-200 text-gray-800 rounded-[12px_12px_12px_0px]' : 'bg-blue-500 text-white rounded-[12px_12px_0px_12px]'
+        className={`p-3  ${
+          isAI ? 'bg-gray-200 text-gray-800 rounded-[12px_12px_12px_0px] max-w-[100%]'  : 'max-w-[70%] bg-blue-500 text-white rounded-[12px_12px_0px_12px]'
         }`}
       >
         <div

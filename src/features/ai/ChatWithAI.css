@@ -33,3 +33,13 @@
 }
 
 
+/* Thêm vào file CSS */
+.thinking-process {
+  background-color: #f8f9fa;
+  border-left: 4px solid #ffc107;
+  padding: 8px 12px;
+  margin: 4px 0;
+  border-radius: 4px;
+  font-style: italic;
+  color: #666;
+}
